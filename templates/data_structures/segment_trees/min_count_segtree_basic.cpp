@@ -63,7 +63,7 @@ private:
 	
 public:
 	// check
-    SegTree(int size, T invalid = numeric_limits<T>::max()){
+    SegTree(int size, T invalid = numeric_limits<T>::max ()){
 		n = size;
 		INVALID={invalid,0};
       	tree.resize(4*n,INVALID);
