@@ -5,7 +5,7 @@ using ll = long long;
 Created: 2025-11-30 19:04:03
 File: min_count_segtree_basic
 Author: github@legalunicorn
-Test status: 
+Test status: basic test
 Description: 
  __  __     __     ______     ______     ______   
 /\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
@@ -13,7 +13,6 @@ Description:
  \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 */
-
 
 template<class T>
 struct SegTree{
@@ -51,12 +50,13 @@ private:
 	}
 
 	void up(int low, int high, int pos, int idx, T val){
-		if (low==high) tree[pos] = {val,1};
-		else{
-			int mid = (low+high)/2;
-			if (idx<=mid) up(low,mid,2*pos+1,idx,val);
-			else up(mid+1,high,2*pos+2,idx,val);
+		if (low==high) {
+			tree[pos] = {val,1};
+			return;
 		}
+		int mid = (low+high)/2;
+		if (idx<=mid) up(low,mid,2*pos+1,idx,val);
+		else up(mid+1,high,2*pos+2,idx,val);
 		// check
 		tree[pos] = combine(tree[2*pos+1],tree[2*pos+2]);
 	}
