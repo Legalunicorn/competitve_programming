@@ -74,7 +74,61 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 
+bool check(vpl& a, ll d, int n){
+    // i -> n couunter
+    // j -> interval counter? 
+    int j = 0, i =0; //current inteverla
+    ll bound = -1;
+    // cerr << d << " : " << endl;
+    while(i<n){
+        pl& curr = a[j];
+        if (bound<=curr.F){
+            i++;
+            // place a cow at curr.F 
+            // cerr << curr.F <<  ".  ";
+            bound = curr.F + d;
+        } else if (bound<=curr.S){
+            // place a cow at bound
+            i++;
+            // cerr << bound <<  ",  ";
+            bound += d;
+        } else{ // this interval cannot be used
+            j++;
+        }
+        if (j>=a.size()) return false;
+    }
+    
+    return true;
+
+}
+
 void solve(){
+    int n,m;
+    cin >> n >> m;
+    vpl a(m);
+    for (int i=-0;i<m;i++){
+        ll x,y; cin >> x >> y;
+        a[i] = {x,y};
+    }
+    auto cmp = [](const auto& p, const auto& q){
+        return p.F<q.F;
+    };
+    sort(all(a),cmp);
+    // for (const auto& x: a){
+    //     cerr << x.F << " " << x.S << endl;
+    // }
+    ll res = 1;
+    ll l = 1, r = INF;
+    while(l<=r){
+        ll m = l + (r-l)/2;
+        bool v = check(a,m,n);
+        // cerr << endl;
+        if (v){
+            res = m;
+            l = m + 1;
+        } else r = m -1;
+    }
+    cout << res << endl;
 };
 
 
@@ -83,8 +137,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("socdist.in","r",stdin);
+    freopen("socdist.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

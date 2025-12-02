@@ -74,17 +74,65 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 
+bool check(vl& a, ll k, ll r){
+    int n = a.size();
+    ll mx = -1;
+    ll used = 0;
+    for (int i=0;i<n;i++){
+        if (a[i]>mx){
+            mx = a[i]+2*r;
+            used++;
+        }
+        if (used>k) return false;
+    }
+    return true;
+
+}
 void solve(){
+    ll n,k;
+    cin >> n >> k;
+    vl a(n);
+    for( auto& z:a) cin >> z;
+    if (n<=k){
+        cout << 1 << endl;
+        return;
+    }
+
+    sort(all(a));
+    ll l = 1, r = (ll)((10e10));
+    ll res = r;
+    while(l<=r){
+        ll m = l+(r-l)/2;
+        bool v = check(a,k,m);
+        // cerr << m << " " << v << endl;
+        if (v){
+            res = m;
+            r = m-1;
+        } else l = m+1;
+    }
+    cout << res << endl;
+
 };
 
+/*
+    R is binary searchable
+    given R
+    - decide where to bomb
+    - tells us how far the bomb each 
+
+    eg. for the first element 
+    we bomb x[i]+R, and we cover until x[i]+2R
+    then we consume a K
+    if the next cow is within our max we can keeo
+*/
 
 int main(){
 
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("angry.in","r",stdin);
+    freopen("angry.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

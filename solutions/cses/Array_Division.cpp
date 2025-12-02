@@ -73,9 +73,49 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
+bool check(vl& a, ll m, int k){
+    int g = 1;
+    ll sum = 0;
+    for (ll x: a){
+        if (x>m) return false;
+        if (sum+x>m){
+            g++;
+            sum = x;
+        } else{
+            sum += x;
+        }
+        if (g>k) return false;
+    }
+    return true;
+}
+
 
 void solve(){
+    int n,k;
+    cin >> n >> k;
+    vl a(n);
+    for (auto& z:a) cin>> z;
+    ll l = 1, r = INF;
+    ll res = r;
+
+    while(l<=r){
+        ll mid = l+(r-l)/2;
+        if (check(a,mid,k)){
+            res = mid;
+            r = mid - 1;
+        } else l = mid +1;
+    }
+    cout << res << endl;
+
+    
+
+    
 };
+
+/*
+    i misread heavily. they said subarray not subsequences!
+    makes it so much easier
+*/
 
 
 int main(){

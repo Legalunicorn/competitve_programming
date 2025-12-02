@@ -75,16 +75,70 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 void solve(){
+    int n;
+    ll k;
+    cin >> n >> k;
+    vl a(n);
+    for (auto& z:a ) cin >> z;
+    sort(all(a));
+    vpi left(n), right(n);
+    int mx = 0, pos = 0;
+    for (int i=0;i<n;i++){
+        ll v = a[i]-k;
+        int p = lower_bound(all(a),v)-a.begin();
+        int d = i-p+1;
+        if (d>mx){
+            mx = d;
+            pos = i;
+        }
+        left[i]  = {mx,pos};
+    }
+
+    mx = 0, pos = n-1;
+    for (int i=n-1;i>=0;i--){
+        ll v = a[i]+k;
+        int p = upper_bound(all(a),v)-a.begin();
+        int d = p-i;
+        if (d>mx){
+            mx = d;
+            pos = i;
+        }
+        right[i] = {mx,pos};
+    }
+
+    int res = 0;
+    for (int i=0;i<n;i++){
+        int evl = left[i].first + right[i].first;
+        if (left[i].second==right[i].second){
+            evl--;
+        }
+        res = max(res,evl);
+    }
+
+    cout << res << endl;
+    
 };
 
+
+// 1 5 5 9 10 12 14 
+/*
+n^2 log^2n 
+
+is easy 
+
+try every pair of staring inteveral 
+
+
+
+*/
 
 int main(){
 
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("diamond.in","r",stdin);
+    freopen("diamond.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

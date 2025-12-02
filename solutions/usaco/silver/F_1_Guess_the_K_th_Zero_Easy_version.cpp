@@ -50,7 +50,7 @@ constexpr double PI = 3.14159265358979323846;
 
 
 // macros
-#define endl '\n' 
+// #define endl '\n' 
 #define F first
 #define S second 
 #define all(x) begin(x), end(x)
@@ -73,11 +73,58 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
+/*
+1. get the sum 
+- count of ones
+- count of zeros 
 
+now we want the kth zero.
+does it have any properties?
+there are k-1 zeros behind it , and x - k zeros after it 
+
+if we query L...J 
+
+d = J - L + 1 
+s -> how many ones 
+d - s = how many zeros! 
+
+should be sufficient for 10e5
+
+
+
+*/
 void solve(){
+    int n,t,k;
+    cin >> n >> t >> k;
+    int l = 1, r = n;
+    int res = -1;
+     
+    while(l<=r){
+        int m = (l+r)/2;
+        // cerr << l << "  " << m << " " << r << endl;
+        cout << "? 1 " << m << endl;
+        int v; 
+        cin >> v;
+
+        int zeros = m - v;
+        // cerr << "detcted: " << zeros << endl;
+        if (zeros==k){
+            res = m;
+            r = m - 1;
+        } else if (zeros<k){
+            l = m + 1;
+        } else{
+            r = m - 1;
+        }
+    }
+    cout << "! " << res << endl;
+
+
+    
+
 };
 
-
+//0111
 int main(){
 
     ios::sync_with_stdio(0);

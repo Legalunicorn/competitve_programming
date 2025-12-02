@@ -73,9 +73,102 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
+/*
+coordinate compression dont quite work
+with long double...
+
+
+i should figure out another way perhaps?.
+how to find if all interval has a common value
+maintain max and min? 
+the
+*/
+bool check(vl& a, vl& b, ld T){
+
+    // map<ld,int> mp;
+    // set<ld> vals;
+    int n = a.size();
+    ld mn = (ld)(-1);
+    ld mx = (ld)(INF);
+    for (int i=0; i<n;i++){
+        ld x = (ld)a[i];
+        ld left = x-(T*b[i]);
+        ld right = x+(T*b[i]);
+
+        mn = max(mn,left);
+        mx = min(mx,right);
+        // vals.insert(left);
+        // vals.insert(right);
+    }
+    // cerr << mn << " "  << mx << endl;
+    return mn<=mx;
+    // cerr << "t: " << T  << endl;
+    // int id = 0;
+    // for (const auto& s: vals){
+    //     cerr << to_string(s) << "  ";
+    //     mp[s]=id++;
+    // }
+    // cerr << endl;
+    // vi nodes(id+1);
+    // for (int i=0; i<n;i++){
+    //     ld x = (ld)a[i];
+    //     ld left = x-T;
+    //     ld right = x+T;
+    //     nodes[mp[left]]++;
+    //     nodes[mp[right]+1]--;
+    // }
+    // int tot = nodes[0];
+    // for (int i=1;i <(id+1); i++){
+    //     nodes[i] += nodes[i-1];
+    //     if (nodes[i]==n) return true;
+    // }
+    // return false;
+};
 
 void solve(){
+    int n;
+    cin >> n;
+    vl a(n),b(n);
+    for (auto& z:a) cin >> z;
+    for (auto& z:b) cin >> z;
+    ld l = 0, r = (ld)MAX(a);
+    ld res = r;
+    while((r-l)>=0.0000001){
+        ld mid = l+(r-l)/2;
+        if (check(a,b,mid)){
+            res = mid;
+            r = mid- 0.0000001;
+        } else l = mid + 0.0000001;
+    }
+    cout << to_string(res) << endl;
 };
+/*
+1. binarch search over T
+2. coordinate compression for each K
+
+
+
+------
+1. we have to find the optimal point where everyone can meet
+2. we have to find the max time for everyone to reach said point 
+
+lets say we try by time K
+-> if all the intervals intersect at some common point, then its possible
+
+-> coordinate compression maybe? 
+
+1. for every person generate 2 end points
+2. compress into a differen array
+3. find any position in the difference array equals to n
+
+as for the binary search, we need accuracy of 10e-6,
+
+l<=r
+(r-l<=0.0000001)
+should work, hopefully not tle 
+
+
+*/
 
 
 int main(){

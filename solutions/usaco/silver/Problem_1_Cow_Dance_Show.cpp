@@ -74,7 +74,50 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 
+bool check(int k,vi& a,int t){
+    /*
+        im not sure if the order even matters
+        we should be able to simulate in n or n log n time
+        maybe like a pq? 
+        keep track of the delay
+        then every new entry just add it with the delay
+    */
+    if (k>=a.size()) return true; //can fit under tmax
+
+    int delay = 0;
+    int mx = 0;
+    priority_queue<int, vi, greater<int>> min_pq;
+    for (int i=0;i<a.size();i++){
+        if (i<k){
+             min_pq.push(a[i]);
+             mx = max(mx,a[i]);
+        }
+        else{
+            int tp= min_pq.top(); min_pq.pop();
+            cerr << tp << endl;
+            delay += (tp-delay);
+            mx = max(mx,delay+a[i]);
+            min_pq.push(delay+a[i]);
+        }
+    }
+    return mx <= t;
+};
+
 void solve(){
+    int n,t;
+    cin >> n >> t;
+    vi a(n);
+    for (auto& z: a) cin >> z;
+    int l = 1, r = n;
+    int res = r;
+    while(l<=r){
+        int m = (l+r)/2;
+        if (check(m,a,t)){
+            res = m;
+            r = m -1;
+        } else l = m + 1;
+    }
+    cout << res << endl;
 };
 
 
@@ -83,8 +126,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("cowdance.in","r",stdin);
+    freopen("cowdance.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

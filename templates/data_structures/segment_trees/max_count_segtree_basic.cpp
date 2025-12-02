@@ -2,10 +2,10 @@
 using namespace std;
 using ll = long long;
 /*
-Created: 2025-11-30 19:04:03
-File: min_count_segtree_basic
+Created: 2025-11-30 19:54:44
+File: max_count_segtree_basic
 Author: github@legalunicorn
-Test status: passed https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/C
+Test status: 
 Description: 
  __  __     __     ______     ______     ______   
 /\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
@@ -23,7 +23,8 @@ private:
 
     pair<T,int> combine(pair<T,int> p, pair<T,int> q){
         if (p.first == q.first) return {p.first, p.second+q.second};
-        else if (p.first < q.first) return p;
+	    // #################### CHECK #######################
+        else if (p.first > q.first) return p;
         else return q;
     }
 
@@ -62,8 +63,8 @@ private:
 	}
 	
 public:
-	// check
-    SegTree(int size, T invalid = numeric_limits<T>::max ()){
+	// #################### CHECK #######################
+    SegTree(int size, T invalid = numeric_limits<T>::min ()){
 		n = size;
 		INVALID={invalid,0};
       	tree.resize(4*n,INVALID);
@@ -77,22 +78,8 @@ public:
 
 
 
-
 // FOR TESTING 
 void solve(){
-    int n,q;
-    cin >> n >> q;
-    vector<int> a(n);
-    for (auto& z:a) cin >> z;
-    SegTree<int> st(n);
-    st.build(a);
-    while(q--){
-        int l,r;
-        cin >> l >> r;
-        pair<int,int> res = st.query(l-1,r-1);
-        cout << res.first << " " << res.second << endl;
-
-    }
 };
 
 

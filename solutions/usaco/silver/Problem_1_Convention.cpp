@@ -74,17 +74,67 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 
-void solve(){
-};
+bool check(vl& a, ll n, ll m, ll c, ll x){
+    // x -> waiting time
+    ll curr = a[0];
+    int cnt = 1;
+    int cap = 1;
+    for (int i=1;i<n;i++){
+        if (cap==c || (a[i]-curr)>x){
+            cnt++;
+            curr = a[i];
+            cap  = 1;
+        } else{
+            cap++;
+        }
+     
+        if (cnt>m) return false;
+    }
+    return true;
 
+
+};
+// 1 1 3 4 10 14
+
+void solve(){
+    ll n,m,c;
+    cin >> n >> m >> c;
+    vl a(n);
+    for (auto& z:a) cin >> z;
+    sort(all(a));
+    ll l = 0, r = INF;
+    ll res = r;
+    while(l<=r){
+        ll mid= l+(r-l)/2;
+        bool v = check(a,n,m,c,mid);
+        // cerr << " " << v << endl;
+        if (v){
+            res = mid;
+            r = mid-1;
+        } else l = mid + 1;
+    }
+    cout << res << endl;
+
+};
+/*
+    we can binary search the waiting time
+    then assign the bus accordinging.
+    we have M buses with C cows
+    the cows are waiting.. on the bus?
+    the waiting time = first cow bus
+    while a[i] - first <= mid ,  insert a[i]
+    ++ 
+    1. sort the cows by arrival 
+
+*/
 
 int main(){
 
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("convention.in","r",stdin);
+    freopen("convention.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

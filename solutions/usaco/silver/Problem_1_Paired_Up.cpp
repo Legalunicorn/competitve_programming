@@ -75,16 +75,51 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 void solve(){
-};
+    int n;
+    cin >> n;
+    vector<pair<ll,ll>> a(n);;
+    for (int i=0;i<n;i++){
+        ll x,y;
+        cin >> x >> y;
+        a[i] = {y,x};
+    }
+    sort(all(a));
 
+    int l = 0, r = n-1;
+    ll res = 0;   
+    while(l<=r){
+        pair<ll,ll>& left = a[l];
+        pair<ll,ll>& right = a[r];
+        ll sum = a[l].F + a[r].F;
+        res = max(res,sum);
+  
+        ll mn = min(left.second,right.second);
+        left.second -= mn;
+        right.second -= mn;
+        if (left.second<=0) l++;
+        if (right.second<=0) r--;
+        
+    }
+    // for (const auto& x: a){
+    //     cerr << x.first <<  " " << x.S << endl;
+    // }    
+    cout << res << endl;
+};
+/*
+milking happens simoutaneously 
+we greedily pair the the fastest cow with the slowest cow
+
+but we need to be quick
+
+*/
 
 int main(){
 
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("pairup.in","r",stdin);
+    freopen("pairup.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

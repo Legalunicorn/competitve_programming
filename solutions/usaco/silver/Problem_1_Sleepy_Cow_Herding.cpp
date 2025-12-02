@@ -73,18 +73,62 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-
+// Stuck, did not solve
+// try again
 void solve(){
+    int n;
+    cin >> n;
+    vl a(n);
+    for (auto& z:a) cin >> z;
+    // debugv(a);
+    sort(all(a));
+
+    int ltr =0 ;
+    int r = 1;
+    for (int i=0;i<n;i++){
+        while( r<n && a[r]-a[r-1]==1) r++;
+        if (r==n) break;
+        a[i] = a[r]-1
+    }
+
+    int rtl = 0;
+    int l = n-2;
+    // idea maybe simulate left and right 
+    // to find the max count
+    // ll one = 0;
+    // for (int i = 1; i < n; i++){
+    //     if (a[i]-a[i-1]>1)
+    // }
+    
+    int r = 0;
+    int least = n;
+    int most = 1;
+    for (int i=0; i<n; i++){
+        while(r<n && a[r]-a[i]+1<= (ll)n) r++;
+        most = max(most, r-i);
+        // if (r-i>1) least = min(least,r-i);
+    }
+    int mn = n - most;
+    // int mx = n - least;
+    cout << mn << endl;
+    cout << mx << endl;
 };
 
+/*
+max moves:  (max - min) - n
+
+min moves, we want a[i]+n to have max range 
+max this value then 
+
+*/
 
 int main(){
 
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    // freopen("herding.in","r",stdin);
+    // freopen("herding.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

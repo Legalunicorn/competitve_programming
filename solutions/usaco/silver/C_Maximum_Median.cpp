@@ -74,7 +74,49 @@ bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c 
 
 
 
+// not quite buddy
+/*
+think careuflly about what i means raising the median
+to "x"
+
+means at least half the values must be gte>=x
+*/
+bool f(vl& a, ll x, ll k){
+    ll tot = 0;
+    int n = a.size();
+    int lb = lower_bound(all(a),x)-a.begin();
+    // cerr << x << " " << lb << endl;
+    ll cnt = n - lb;
+    for (int i = lb-1; i>=0; i--){
+        if (cnt> n/2) return true;
+        tot += (x-a[i]);
+        if (tot>k) return false;
+        cnt++;
+    }
+    return true;
+
+
+}
+
 void solve(){
+    int n;
+    ll k;
+    cin >> n >> k;
+    vl a(n);
+    for (auto & z:a ) cin >> z;
+    sort(all(a));
+    ll l = a[a.size()/2], r = INF;
+    ll res = l;
+    while(l<=r){
+        ll mid = l+(r-l)/2;
+        if (f(a,mid,k)){
+            res = mid;
+            l = mid + 1;
+        } else r = mid - 1;
+    }
+    cout << res << endl;
+
+
 };
 
 
