@@ -1,18 +1,16 @@
 #include <bits/stdc++.h>
-#include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+#include <queue>
+
 using namespace std;
 using namespace chrono;
 // using namespace __gnu_pbds;
-
-//template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+//template/ template <class T> using ordered_set = tree<T, null_type,
 // less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 // // 
 // template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// less_e
 
 //alias 
 using ll = long long;
@@ -65,30 +63,40 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
 
-
+// Read the editorial 
+// Hard problem imo. Ratd 1700 on AC which is way above my comfort zone
 void solve(){
     int n;
     cin >> n;
-    int mx = 0;
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
+    vpl a(n);
+    for (int i=0;i<n;i++) cin >> a[i].F >> a[i].S;
+    sort(all(a));
+    priority_queue<ll,vl,greater<ll>> pq;
+    int idx = 0, box = 0;
+    while (idx <n || !pq.empty()){
+        if (pq.empty()){
+            box = a[idx].F;
         }
+        // add all intervals 
+        while(idx<n && a[idx].F == box){
+            pq.push(a[idx].S);
+            idx++;
+        }
+        ll top = pq.top(); pq.pop();
+        if (top < box){
+            cout << "No" << endl;
+            return;
+        }
+        box ++;
     }
-    cout << mx << endl;
+    cout << "Yes" << endl; 
+
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);

@@ -1,18 +1,26 @@
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
 #include <bits/stdc++.h>
 #include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace chrono;
-// using namespace __gnu_pbds;
+using namespace __gnu_pbds;
 
 //template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
-// less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-// // 
-// template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// distinct - pbds 
+template <class T> using ordered_set = tree<T, null_type,
+less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// 
+template <class T> using ordered_multiset = tree<T, null_type,
+less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
 //alias 
 using ll = long long;
@@ -65,37 +73,69 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
+/*
+    sort all the mouses by their groups first
+    then those with one type mustbe fed first 
+    we cannot feed both becuase the bottleneck makes no sense
+    they demand we have as many computers with mouses
 
-
+    sort both U and P, feed computerU computerP 
+    acess
+*/
 void solve(){
-    int n;
-    cin >> n;
-    int mx = 0;
+    int a,b,c;
+    pl res;
+    cin >> a >> b >> c;
+    int n; cin >> n;
+    // vpi a(n);
+    vi u,p, ex;
     for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
-        }
+        int x;
+        string s;
+        cin >> x >> s;
+        if (s[0]=='U') u.pb(x);
+        else p.pb(x);
     }
-    cout << mx << endl;
+    sort(all(u));
+    sort(all(p));
+    // feed a and b first
+    int mn = min(a,(int)(u.size()));
+    res.F += mn;
+    for (int i=0;i<u.size();i++){
+        if (i<mn) res.S += u[i];
+        else ex.pb(u[i]);
+    }
+
+    mn = min(b,(int)(p.size()));
+    res.F += mn;
+    for (int i=0;i<p.size();i++){
+        if (i<mn) res.S += p[i];
+        else ex.pb(p[i]);
+    }
+    sort(all(ex)); 
+    // debugv(ex);
+    mn = min(c, (int)(ex.size()));
+    res.F += mn;
+    for (int i=0;i<mn;i++){
+        res.S += ex[i];
+    }
+    cout << res.F << " " << res.S << endl;
+
+
+    
+
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

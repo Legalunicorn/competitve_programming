@@ -1,18 +1,26 @@
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
 #include <bits/stdc++.h>
 #include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace chrono;
-// using namespace __gnu_pbds;
+using namespace __gnu_pbds;
 
 //template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
-// less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-// // 
-// template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// distinct - pbds 
+template <class T> using ordered_set = tree<T, null_type,
+less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// 
+template <class T> using ordered_multiset = tree<T, null_type,
+less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
 //alias 
 using ll = long long;
@@ -64,38 +72,40 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
-
+/*
+    every stick has the same length? wouldnt the mean be optimal?
+    1 2 2 3 5 // 2.6
+*/
 
 void solve(){
-    int n;
+    ll n;
     cin >> n;
-    int mx = 0;
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
-        }
-    }
-    cout << mx << endl;
+    vl A(n);
+    for (auto & z: A) cin >> z;
+    sort(all(A));
+    // mediam
+    ll tot = 0;
+    for (ll x:A) tot+=x;
+    ll a = A[n/2];
+    ll res = 0;
+    // ll opt1 = 0, opt2 = 0;
+    for (ll x: A) res += abs(x-a);
+    // for (ll x : A) opt2 += abs(x-b);
+    // cout << min(opt1,opt2) << endl;
+    cout << res << endl;
+
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

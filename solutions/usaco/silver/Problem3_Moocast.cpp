@@ -1,18 +1,47 @@
-#include <bits/stdc++.h>
-#include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
+// #include <iostream>
+// #include <cstdio>
+// #include <cstdlib>
+// #include <algorithm>
+// #include <cmath>
+// #include <vector>
+// #include <set>
+// #include <map>
+// #include <unordered_set>
+// #include <unordered_map>
+// #include <queue>
+// #include <ctime>
+// #include <cassert>
+// #include <complex>
+// #include <string>
+// #include <cstring>
+// #include <chrono>
+// #include <random>
+// #include <bitset>
+// #include <iomanip>
+// #include <functional>
+// #include <numeric>
+// #include <stack>
+// #include <array>
+#include "bits/stdc++.h"
+
 using namespace std;
 using namespace chrono;
 // using namespace __gnu_pbds;
-
-//template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+//template/ template <class T> using ordered_set = tree<T, null_type,
 // less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 // // 
 // template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// less_e
 
 //alias 
 using ll = long long;
@@ -65,37 +94,63 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
+/*
+   from each cow, check if there is a connection to another every other cow, 
+   basically draw a graph
+   then, from every cow we perform a dfs for the most cows reached.
+   n^n + n^n time o
+   */
 
+int go(int i, vb& vis, vvi& g){
+    int cnt = 1;
+    vis[i] = true;
+    for (int v: g[i]){
+        if (vis[v]) continue;
+        cnt += go(v,vis,g);
+    }
+    return cnt;
+}
 
 void solve(){
     int n;
     cin >> n;
-    int mx = 0;
+    vvi a(n);
+    for (int i=0;i<n;i++){
+        int x,y,r; cin >> x >> y >> r;
+        a[i] = {x,y,r};
+    }
+    vvi g(n);
     for (int i=0;i<n;i++){
         for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
+            if (j==i) continue;
+            //from i -> j 
+            ld x = abs(a[i][0]-a[j][0]);
+            ld y = abs(a[i][1]-a[j][1]);
+            ld dist = sqrt((x*x)+(y*y));
+            if (dist<=(ld)a[i][2]){
+                g[i].pb(j);
+            }
         }
     }
-    cout << mx << endl;
+    int res = 1;
+    for (int i=0; i<n; i++){
+        vb vis(n,false);
+        int reach = go(i,vis,g);
+        res = max(res,reach);
+    }
+    cout << res << endl;
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("moocast.in","r",stdin);
+    freopen("moocast.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

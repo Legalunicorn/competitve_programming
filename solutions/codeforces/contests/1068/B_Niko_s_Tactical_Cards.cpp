@@ -1,18 +1,24 @@
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
+
 #include <bits/stdc++.h>
-#include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+
 using namespace std;
 using namespace chrono;
 // using namespace __gnu_pbds;
-
-//template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+//template/ template <class T> using ordered_set = tree<T, null_type,
 // less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 // // 
 // template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// less_e
 
 //alias 
 using ll = long long;
@@ -65,30 +71,51 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
-
 
 void solve(){
     int n;
     cin >> n;
-    int mx = 0;
+    vl a(n), b(n);
+    for (auto& z:a) cin >> z;
+    for (auto& z:b) cin >> z;
+    vl sf(n);
+    sf[n-1] = a[n-1];
+    for (int i=n-2;i>=0;i--) sf[i] = sf[i+1]+a[i];    
+
+
+    // make a very negative number 
+    // make a very positive numbe r
+    debugv(a);
+    debugv(b);
+    debugv(sf);
+
+    // negative 
+    ll res = 0;
+    ll low =0, high = 0; 
     for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
-        }
+        ll x1  = b[i] - low;
+        ll x2 =  b[i] - high;
+        ll y1 = low - a[i];
+        ll y2 = high - a[i];
+
+        low = min(  min(x1,x2), min(y1,y2) );
+        high = max( max(x1,x2), max(y1,y2));
+        res = max(res,high);
+        
+
+        
     }
-    cout << mx << endl;
+    cout << high << endl;
+
 };
+/*
+
+
+*/
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);

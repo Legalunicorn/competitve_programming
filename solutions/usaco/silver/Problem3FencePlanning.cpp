@@ -1,18 +1,24 @@
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
+
 #include <bits/stdc++.h>
-#include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+
 using namespace std;
 using namespace chrono;
 // using namespace __gnu_pbds;
-
-//template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+//template/ template <class T> using ordered_set = tree<T, null_type,
 // less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 // // 
 // template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// less_e
 
 //alias 
 using ll = long long;
@@ -64,38 +70,61 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
+void dfs(int u, vb& vis, vvi& g, vpi& a,vi& ans){
+    vis[u] = true;
+    ans[0] = min(ans[0],a[u].S);
+    ans[1] = max(ans[1],a[u].S);
+    ans[2] = min(ans[2],a[u].F);
+    ans[3] = max(ans[3],a[u].F);
+    for (int v: g[u]){
+        if (!vis[v]) dfs(v,vis,g,a,ans);
+    }
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
 
+};
 
 void solve(){
-    int n;
-    cin >> n;
-    int mx = 0;
+    int n,m;
+    cin >> n >> m;
+    vvi g(n);
+    vpi a(n);
     for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
+        cin >> a[i].F >> a[i].S;
+    }
+    for (int i=0;i<m;i++){
+        int u,v; cin >> u >> v;
+        u--; v--;
+        g[u].pb(v);
+        g[v].pb(u);
+    }
+    // debugm(g);
+    int res = INT_MAX;
+    vb vis(n,false);
+    for (int i=0;i<n;i++){
+        if (!vis[i]){
+            // connected component 
+            vi temp = {a[i].S,a[i].S,a[i].F,a[i].F} ;
+            dfs(i,vis,g,a, temp);
+            int dx = temp[1] - temp[0];
+            int dy = temp[3] - temp[2];
+            int val = 2*dx + 2*dy;
+            res = min(res,val);
         }
     }
-    cout << mx << endl;
+    cout << res << endl;
+
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("fenceplan.in","r",stdin);
+    freopen("fenceplan.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

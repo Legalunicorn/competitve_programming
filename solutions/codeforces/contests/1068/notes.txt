@@ -1,0 +1,29 @@
+Problem A 
+super trivial, solved under 2 minutes 
+
+Problem B 
+this took me almost half an hour 
+wasn't obvious to keep track of min and max
+even after submitted it, im still not 100% sure why it works
+intuitively it makes sense, you store min because it can become max next turn 
+but i didnt have time to proove
+
+
+Problem C 
+Main problem for me 
+About 5k AC so rule of thumb I should have done this 
+
+I got the idea to sort and take each element that didnt appear
+Had the right idea but approach was too slow O(n^2)
+
+What i did wrong
+- maintained a set, and then for each element in the set check if x is divisible
+
+What is better 
+- every time you add element, add ALL its multiples into a pool of seen numbers 
+- the trick is that if k divided by number is longer than the array you just exit
+- otherwise you only need to look at n muliples which should be sufficient 
+
+with my approach, i run through the entire set for each element which is n^2 
+
+the other approach still appears to be n^2 but apparently not 

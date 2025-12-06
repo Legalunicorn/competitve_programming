@@ -1,0 +1,4 @@
+#Ignore precompiled headers 
+pch.hpp
+pch.hpp.gch 
+*.gch

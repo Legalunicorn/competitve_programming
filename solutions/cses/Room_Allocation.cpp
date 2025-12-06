@@ -1,18 +1,26 @@
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
 #include <bits/stdc++.h>
 #include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 using namespace chrono;
-// using namespace __gnu_pbds;
+using namespace __gnu_pbds;
 
 //template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
-// less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-// // 
-// template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// distinct - pbds 
+template <class T> using ordered_set = tree<T, null_type,
+less<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// 
+template <class T> using ordered_multiset = tree<T, null_type,
+less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
 
 //alias 
 using ll = long long;
@@ -31,6 +39,8 @@ using vpi = vector<pi>;
 using vvpi = vector<vpi>;
 using vb = vector<bool>;
 using vvb = vector<vb>;
+using minpq = priority_queue<int,vi,greater<int>>;
+using minpqll = priority_queue<ll,vl, greater<ll>>; 
 
 
 // constants 
@@ -65,37 +75,64 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
-
 
 void solve(){
     int n;
     cin >> n;
-    int mx = 0;
+    vvl a(n,vl(3));
     for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
-        }
+        ll l,r; 
+        cin >> l  >> r;
+        // a[i] = {l,r};
+        a[i] = {l,r,i};
     }
-    cout << mx << endl;
+    sort(all(a),[](const auto&p, const auto& q){
+        if (p[0]==q[0]) return p[1]<q[1];
+        return p[0]<q[0];
+        // if (p.F==q.F) return p.S<q.S;
+        // return p.F < q.F;
+    });
+    // minpqll pq;
+    const auto cmp = [](const auto& p, const auto& q){
+        return p.F > q.F;
+    };
+    priority_queue<pl,vpl,decltype(cmp)> pq(cmp);
+    stack<int> avail;
+    int res = 0;
+    vi id(n);
+    for (int i=0;i<n;i++){
+        while(!pq.empty() && pq.top().F<a[i][0]) {
+            avail.push(pq.top().S);
+            pq.pop();
+        }
+        int room =0;
+        if (!avail.empty()){
+            room = avail.top();
+            avail.pop();
+        } else{ //all rooms are filled
+            room = res+1;
+        }
+        id[a[i][2]] = room;
+        res = max(res,room);
+        pq.push({a[i][1],room});
+
+    }
+    cout << res << endl;
+    for (int i:id) cout << i << " ";
+    cout << endl;
+
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

@@ -1,18 +1,24 @@
+/*
+ __  __     __     ______     ______     ______   
+/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
+\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
+ \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
+  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
+
+  */
+
 #include <bits/stdc++.h>
-#include <chrono>
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
+
 using namespace std;
 using namespace chrono;
 // using namespace __gnu_pbds;
-
-//template 
-// // distinct - pbds 
-// template <class T> using ordered_set = tree<T, null_type,
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+//template/ template <class T> using ordered_set = tree<T, null_type,
 // less<T>, rb_tree_tag,tree_order_statistics_node_update>;
 // // 
 // template <class T> using ordered_multiset = tree<T, null_type,
-// less_equal<T>, rb_tree_tag,tree_order_statistics_node_update>;
+// less_e
 
 //alias 
 using ll = long long;
@@ -65,30 +71,47 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-int calc(int i, int j, int n){
-    return (i*n)+j+1;
-}
-
-
 void solve(){
-    int n;
-    cin >> n;
-    int mx = 0;
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            int v = calc(i,j,n);
-            if (i>0) v += calc(i-1,j,n);
-            if (i+1<n) v += calc(i+1,j,n);
-            if (j>0) v += calc(i,j-1,n);
-            if (j+1<n) v += calc(i,j+1,n);
-            mx = max(v,mx);
+    int n,k;
+    cin >> n >> k;
+    vl a(n);
+    for (auto& z:a) cin >> z;
+    // res -> resultant set 
+    // def -> set of all elements in a 
+    // mul -> all multiples in res 
+    set<ll> res, def(all(a)), mul;
+    sort(all(a));
+    for (int i=0; i<n ;i++){
+        ll cur = a[i];
+        // already seen this multiple 
+        if (mul.count(cur)) continue;
+        res.insert(cur);
+        // gaps number of multiples at least 
+        ll gaps = k/cur;
+        if (gaps > (n-i)){
+            cout << -1 << endl;
+            return;
+        }
+        // add every multiple of cur[i]
+        for (int x=1; x <= (n-i); x++){
+            ll d = cur*x;
+            if (d>k) break;
+            if (!def.count(d)) {
+                cout << -1 << endl;
+                return;
+            }
+            mul.insert(d);
         }
     }
-    cout << mx << endl;
+    cout << res.size() << endl;
+    for (auto& x:res) cout << x << " "; 
+    cout << endl; 
+
 };
 
 
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
