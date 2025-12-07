@@ -13,6 +13,7 @@ Descrption: Min segment tree
 */
 
 //SNIPPET_ID:segtree_basic
+// ==== check combine function, update funciton, and default tree value 
 template<class T>
 struct SegTree{
 private:
@@ -45,12 +46,14 @@ private:
                 );
 	}
 	void up(int low, int high, int pos, int idx, T val){
-		if (low==high) tree[pos] = val;
-		else{
-			int mid = (low+high)/2;
-			if (idx<=mid) up(low,mid,2*pos+1,idx,val);
-			else up(mid+1,high,2*pos+2,idx,val);
-		}
+        // == =val or +=val 
+        if (low == high){
+            tree[pos] = val;
+            return;
+        }
+        int mid = (low+high)/2;
+        if (idx<=mid) up(low,mid,2*pos+1,idx,val);
+        else up(mid+1,high,2*pos+2,idx,val);
         tree[pos] = combine(tree[2*pos+1], tree[2*pos+2]);
 	}
 public:
