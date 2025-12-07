@@ -2,8 +2,8 @@
 using namespace std;
 using ll = long long;
 /*
-Created: 2025-12-04 21:08:39
-File: test2
+Created: 2025-12-07 04:22:38
+File: demo123
 Author: github@legalunicorn
 Test status: 
 Description: 
@@ -14,22 +14,20 @@ Description:
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 */
 
-template<Class T>
-struct Segtree {
-  const int fuck;
-  vector<int> f();
 
+//SNIPPET_ID:demo123
+struct demo12312312312321321321{
+    int x;
+    int y;
 };
 
-
+//END_SNIPPET:demo123
 
 
 // FOR TESTING 
 void solve(){
 };
 
-void solve(){
-};
 
 int main(){
     ios::sync_with_stdio(0);
@@ -42,3 +40,6 @@ int main(){
     }
     return 0;
 }
+
+
+

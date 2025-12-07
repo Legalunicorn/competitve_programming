@@ -15,8 +15,10 @@ Description:
 */
 
 
+//SNIPPET_ID:__TEMPLATE_NAME__
 
 
+//END_SNIPPET:__TEMPLATE_NAME__
 
 
 // FOR TESTING 
@@ -35,3 +37,6 @@ int main(){
     }
     return 0;
 }
+
+
+

@@ -2,8 +2,8 @@
 using namespace std;
 using ll = long long;
 /*
-Created: 2025-12-03 01:07:16
-File: test
+Created: 2025-12-07 21:32:31
+File: binpow
 Author: github@legalunicorn
 Test status: 
 Description: 
@@ -15,9 +15,30 @@ Description:
 */
 
 
+//SNIPPET_ID:binpow_unbound
+ll binpow(ll a, ll b){
+    ll res = 1;
+    while(b>0){
+        if (b & 1) res = res *a;
+        a = a * a;
+        b >>= 1;
+    }
+    return res;
+}
+//END_SNIPPET:binpow_unbound
 
-
-
+//SNIPPET_ID:binpow_mod
+ll binpowmod(ll a, ll b, ll m){
+    a %= m;
+    ll res = 1;
+    while(b > 0){
+        if (b & 1) res = res * a % m;
+        a = a  * a % m;
+        b >>=1;
+    }
+    return res;
+}
+//END_SNIPPET:binpow_mod
 
 // FOR TESTING 
 void solve(){
@@ -35,3 +56,6 @@ int main(){
     }
     return 0;
 }
+
+
+

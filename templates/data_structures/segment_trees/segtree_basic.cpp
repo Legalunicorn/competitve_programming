@@ -12,12 +12,17 @@ Descrption: Min segment tree
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 */
 
+//SNIPPET_ID:segtree_basic
 template<class T>
 struct SegTree{
 private:
     int n;
     vector<T> tree;
 	T INVALID;
+    // === Change === 
+    T combine(T p, T q){
+        return max(p,q);
+    }
 	void build(int low, int high, int pos, vector<T>& a){
 		if (low==high){
 			tree[pos] = a[low];
@@ -27,17 +32,17 @@ private:
 		build(low,mid,2*pos+1,a);
 		build(mid+1,high,2*pos+2,a);
 		// check
-		tree[pos] = max(tree[2*pos+1],tree[2*pos+2]);
+        tree[pos] = combine(tree[2*pos+1],tree[2*pos+2]);
 	}
 
 	T q(int qlow, int qhigh, int low, int high, int pos){
 		if (qlow<= low && qhigh>=high) return tree[pos];
 		if (qlow> high || qhigh < low) return INVALID;
 		int mid = low+(high-low)/2;
-		return max(
-			q(qlow,qhigh,low,mid,2*pos+1),
-			q(qlow,qhigh,mid+1,high,2*pos+2)
-		);
+        return combine(
+            q(qlow,qhigh,low,mid,2*pos+1),
+            q(qlow,qhigh,mid+1,high,2*pos+2)
+                );
 	}
 	void up(int low, int high, int pos, int idx, T val){
 		if (low==high) tree[pos] = val;
@@ -46,12 +51,10 @@ private:
 			if (idx<=mid) up(low,mid,2*pos+1,idx,val);
 			else up(mid+1,high,2*pos+2,idx,val);
 		}
-		// check
-		tree[pos] = max(tree[2*pos+1],tree[2*pos+2]);
+        tree[pos] = combine(tree[2*pos+1], tree[2*pos+2]);
 	}
-	
 public:
-	// check
+    // === set invalid based on context == 
     SegTree(int size, T invalid = numeric_limits<T>::min()){
 		n = size;
 		INVALID=invalid;
@@ -61,6 +64,7 @@ public:
 	T query(int qlow, int qhigh){ return q(qlow,qhigh,0,n-1,0);}
 	void update(int idx, T val){up(0,n-1,0,idx,val);}
 };
+//END_SNIPPET:segtree_basic
 
 
 
@@ -91,3 +95,4 @@ int main(){
     }
     return 0;
 }
+

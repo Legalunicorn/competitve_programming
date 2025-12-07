@@ -16,6 +16,7 @@ Description:
 
 
 // One mapping 
+//SNIPPET_ID:coord_compression_one
 template<typename T>
 map<T,int> coord_compress(vector<T>& arr){
     int id = 0;
@@ -24,8 +25,13 @@ map<T,int> coord_compress(vector<T>& arr){
     for (const auto& x: arr) mp[x] = id++;
     return mp;
 };
+//END_SNIPPET:coord_compression_one
+
+
+
 
 // Return two mapping 
+//SNIPPET_ID:coord_compression_both
 template<typename T>
 pair<map<T,int>,map<int,T>> coord_compress_both(vector<T>& arr){
     int id =0;
@@ -38,6 +44,7 @@ pair<map<T,int>,map<int,T>> coord_compress_both(vector<T>& arr){
     }
     return {mp,pm};
 };
+//END_SNIPPET:coord_compression_both
 
 
 
@@ -57,3 +64,7 @@ int main(){
     }
     return 0;
 }
+
+
+
+
