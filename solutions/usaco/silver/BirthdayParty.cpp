@@ -6,31 +6,8 @@
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 
   */
-// #include <iostream>
-// #include <cstdio>
-// #include <cstdlib>
-// #include <algorithm>
-// #include <cmath>
-// #include <vector>
-// #include <set>
-// #include <map>
-// #include <unordered_set>
-// #include <unordered_map>
-// #include <queue>
-// #include <ctime>
-// #include <cassert>
-// #include <complex>
-// #include <string>
-// #include <cstring>
-// #include <chrono>
-// #include <random>
-// #include <bitset>
-// #include <iomanip>
-// #include <functional>
-// #include <numeric>
-// #include <stack>
-// #include <array>
-#include "bits/stdc++.h"
+
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace chrono;
@@ -94,51 +71,50 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-/*
-   from each cow, check if there is a connection to another every other cow, 
-   basically draw a graph
-   then, from every cow we perform a dfs for the most cows reached.
-   n^n + n^n time o
-   */
+int cnt  = 0;
 
-int go(int i, vb& vis, vvi& g){
-    int cnt = 1;
-    vis[i] = true;
-    for (int v: g[i]){
-        if (vis[v]) continue;
-        cnt += go(v,vis,g);
+void dfs(int u, vb& seen, vector<set<int>>& g, int x, int y){
+    seen[u] = true;
+    cnt++;
+    for (int v:g[u]){
+        if (u==x && v==y)  continue;
+        if (u==y && v==x)  continue;
+        if (seen[v]) continue;
+        dfs(v,seen,g,x,y);
     }
-    return cnt;
+}
+
+void tc(int n, int q){
+    cerr << n << " " << q << endl;
+    vector<set<int>> g(n);
+    for (int i=0;i<q;i++){
+        int x,y; cin>> x >> y;
+        g[x].insert(y);
+        g[y].insert(x); 
+    }
+    int mn = n;
+    for (int i=0; i<n; i++){
+        for (int j=i+1;j<n;j++){
+            cnt = 0;
+            vb seen(n,false);
+            dfs(0,seen,g, i,j);
+            if (cnt<n) mn = -1;
+        }
+    }
+    if (mn==-1) cout << "Yes" << endl;
+    else cout << "No" << endl;
+
+
 }
 
 void solve(){
-    int n;
-    cin >> n;
-    vvi a(n);
-    for (int i=0;i<n;i++){
-        int x,y,r; cin >> x >> y >> r;
-        a[i] = {x,y,r};
-    }
-    vvi g(n);
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            if (j==i) continue;
-            //from i -> j 
-            ld x = abs(a[i][0]-a[j][0]);
-            ld y = abs(a[i][1]-a[j][1]);
-            ld dist = sqrt((x*x)+(y*y));
-            if (dist<=(ld)a[i][2]){
-                g[i].pb(j);
-            }
-        }
-    }
-    int res = 1;
-    for (int i=0; i<n; i++){
-        vb vis(n,false);
-        int reach = go(i,vis,g);
-        res = max(res,reach);
-    }
-    cout << res << endl;
+   // read 
+   while(true){
+       int n,q; cin >> n >> q;
+       if (n == 0 && q == 0 ) break;
+       tc(n,q);
+   }
+   // we can try brute deo 
 };
 
 
@@ -147,8 +123,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("moocast.in","r",stdin);
-    // freopen("moocast.out","w",stdout);
+    // freopen("file.in","r",stdin);
+    // freopen("file.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

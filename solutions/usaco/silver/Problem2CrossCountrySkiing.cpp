@@ -6,31 +6,8 @@
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 
   */
-// #include <iostream>
-// #include <cstdio>
-// #include <cstdlib>
-// #include <algorithm>
-// #include <cmath>
-// #include <vector>
-// #include <set>
-// #include <map>
-// #include <unordered_set>
-// #include <unordered_map>
-// #include <queue>
-// #include <ctime>
-// #include <cassert>
-// #include <complex>
-// #include <string>
-// #include <cstring>
-// #include <chrono>
-// #include <random>
-// #include <bitset>
-// #include <iomanip>
-// #include <functional>
-// #include <numeric>
-// #include <stack>
-// #include <array>
-#include "bits/stdc++.h"
+
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace chrono;
@@ -94,51 +71,64 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-/*
-   from each cow, check if there is a connection to another every other cow, 
-   basically draw a graph
-   then, from every cow we perform a dfs for the most cows reached.
-   n^n + n^n time o
-   */
-
-int go(int i, vb& vis, vvi& g){
-    int cnt = 1;
-    vis[i] = true;
-    for (int v: g[i]){
-        if (vis[v]) continue;
-        cnt += go(v,vis,g);
+int hit = 0;
+void dfs(int d, int r, int c, vvi& g, vvi& pts, vvb& seen ){
+    int n = g.size(), m = g[0].size();
+    seen[r][c] = true;
+    if (pts[r][c]==1) hit++;
+    for (const auto& dir:dirs){
+        int row  = r+dir[0];
+        int col =  c+dir[1];
+        if (row<0 || row>=n || col<0 || col>=m || seen[row][col]) continue;
+        if (abs(g[r][c]-g[row][col])<=d){
+            dfs(d,row,col,g,pts,seen);
+        }
     }
-    return cnt;
 }
 
+
+
 void solve(){
-    int n;
-    cin >> n;
-    vvi a(n);
+    int n,m; cin >> n >> m;
+    // ive seen this problem before
+    // we just binary search and flood fill 
+    vvi g(n, vi(m));
+    int cnt = 0;
+    int sx = 0, sy = 0;
+
     for (int i=0;i<n;i++){
-        int x,y,r; cin >> x >> y >> r;
-        a[i] = {x,y,r};
+        for (int j=0;j<m;j++)  {
+            cin >> g[i][j];
+        }
     }
-    vvi g(n);
+    vvi pts(n, vi(m));
     for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            if (j==i) continue;
-            //from i -> j 
-            ld x = abs(a[i][0]-a[j][0]);
-            ld y = abs(a[i][1]-a[j][1]);
-            ld dist = sqrt((x*x)+(y*y));
-            if (dist<=(ld)a[i][2]){
-                g[i].pb(j);
+        for (int j=0;j<m;j++){
+            int x; cin >> x;
+            pts[i][j] = x;
+            if (x==1){
+                cnt++;
+                sx = i;
+                sy = j;
             }
         }
     }
-    int res = 1;
-    for (int i=0; i<n; i++){
-        vb vis(n,false);
-        int reach = go(i,vis,g);
-        res = max(res,reach);
+    int l = 0, r =(int)(1000000001);
+    int res = r;
+    while(l<=r){
+        int mid = l+(r-l)/2;
+        hit = 0;
+        vvb seen(n,vb(m));
+        dfs(mid,sx,sy,g,pts,seen);
+        // cerr << "m:" << m << " " << hit << " : " << cnt << endl;
+        if (hit == cnt){
+            res = mid;
+            r = mid -1;
+        } else l = mid +1;
+
     }
     cout << res << endl;
+
 };
 
 
@@ -147,8 +137,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("moocast.in","r",stdin);
-    // freopen("moocast.out","w",stdout);
+    freopen("ccski.in","r",stdin);
+    freopen("ccski.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

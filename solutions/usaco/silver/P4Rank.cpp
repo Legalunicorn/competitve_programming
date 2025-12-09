@@ -6,31 +6,8 @@
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 
   */
-// #include <iostream>
-// #include <cstdio>
-// #include <cstdlib>
-// #include <algorithm>
-// #include <cmath>
-// #include <vector>
-// #include <set>
-// #include <map>
-// #include <unordered_set>
-// #include <unordered_map>
-// #include <queue>
-// #include <ctime>
-// #include <cassert>
-// #include <complex>
-// #include <string>
-// #include <cstring>
-// #include <chrono>
-// #include <random>
-// #include <bitset>
-// #include <iomanip>
-// #include <functional>
-// #include <numeric>
-// #include <stack>
-// #include <array>
-#include "bits/stdc++.h"
+
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace chrono;
@@ -94,51 +71,41 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-/*
-   from each cow, check if there is a connection to another every other cow, 
-   basically draw a graph
-   then, from every cow we perform a dfs for the most cows reached.
-   n^n + n^n time o
-   */
-
-int go(int i, vb& vis, vvi& g){
-    int cnt = 1;
-    vis[i] = true;
-    for (int v: g[i]){
-        if (vis[v]) continue;
-        cnt += go(v,vis,g);
+bool dfs(int u, vb& seen, vvi& g, int start){
+    seen[u] = true;
+    bool res = false;
+    for (int v: g[u]){
+        if (v==start){
+            return true;
+        }
+        if (seen[v]) continue;
+        res = res || dfs(v,seen,g,start);
     }
-    return cnt;
+    return res;
 }
 
 void solve(){
-    int n;
-    cin >> n;
-    vvi a(n);
-    for (int i=0;i<n;i++){
-        int x,y,r; cin >> x >> y >> r;
-        a[i] = {x,y,r};
-    }
+    int n,k;
+    cin >> n >> k;
+    // very small graph 
+    // we just need to know who is part of a cycle 
+    // dfs from every person and check if they reach back themsevles
     vvi g(n);
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            if (j==i) continue;
-            //from i -> j 
-            ld x = abs(a[i][0]-a[j][0]);
-            ld y = abs(a[i][1]-a[j][1]);
-            ld dist = sqrt((x*x)+(y*y));
-            if (dist<=(ld)a[i][2]){
-                g[i].pb(j);
-            }
-        }
+    for (int i=0;i<k;i++){
+        int u,v, a,b;
+        cin >> u >> v >> a >> b;
+        u--; v--;
+        if (a>b){
+            g[u].pb(v);
+        } else g[v].pb(u);
     }
-    int res = 1;
-    for (int i=0; i<n; i++){
-        vb vis(n,false);
-        int reach = go(i,vis,g);
-        res = max(res,reach);
+    int cnt = 0; 
+    for (int i=0; i<n;i++){
+        vb seen(n);
+        bool res = dfs(i,seen,g,i);
+        if (res) cnt++;
     }
-    cout << res << endl;
+    cout << cnt << endl;
 };
 
 
@@ -147,8 +114,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("moocast.in","r",stdin);
-    // freopen("moocast.out","w",stdout);
+    // freopen("file.in","r",stdin);
+    // freopen("file.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

@@ -6,31 +6,8 @@
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 
   */
-// #include <iostream>
-// #include <cstdio>
-// #include <cstdlib>
-// #include <algorithm>
-// #include <cmath>
-// #include <vector>
-// #include <set>
-// #include <map>
-// #include <unordered_set>
-// #include <unordered_map>
-// #include <queue>
-// #include <ctime>
-// #include <cassert>
-// #include <complex>
-// #include <string>
-// #include <cstring>
-// #include <chrono>
-// #include <random>
-// #include <bitset>
-// #include <iomanip>
-// #include <functional>
-// #include <numeric>
-// #include <stack>
-// #include <array>
-#include "bits/stdc++.h"
+
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace chrono;
@@ -93,52 +70,96 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-
-/*
-   from each cow, check if there is a connection to another every other cow, 
-   basically draw a graph
-   then, from every cow we perform a dfs for the most cows reached.
-   n^n + n^n time o
-   */
-
-int go(int i, vb& vis, vvi& g){
-    int cnt = 1;
-    vis[i] = true;
-    for (int v: g[i]){
-        if (vis[v]) continue;
-        cnt += go(v,vis,g);
+int tc = 0;
+int cnt = 0;
+void dfs(int r, int c, vector<string>& g, vvb& seen){
+    seen[r][c] = true;
+    int n = g.size();
+    int m = g[0].size();
+    if (g[r][c] == 'G') cnt++;
+    for (auto& d: dirs){
+        int row = r+ d[0];
+        int col = c+d[1];
+        if (row<0 || row>=n || col<0 || col >=m ||  g[row][col]=='#' || seen[row][col]) continue;
+        dfs(row,col,g,seen);
     }
-    return cnt;
 }
 
 void solve(){
-    int n;
-    cin >> n;
-    vvi a(n);
+    tc++;
+    cnt = 0;
+    // 1. check if escape is connected to B 
+    // replace neightbors of B with wall, if its a G return false 
+    // flood fill from escape and find all G 
+    int n,m; cin >> n >> m;
+    vector<string> g(n);
+    for (int i=0;i<n;i++) cin >> g[i];
+    // if (tc==63){
+    //     string ans;
+    //     for (auto x: g) ans+=x;
+    //     ans+="///";
+    //     cout << ans << endl;
+    //     return;
+    // }
+    int g_cnt = 0;
+    int d_cnt = 0;
     for (int i=0;i<n;i++){
-        int x,y,r; cin >> x >> y >> r;
-        a[i] = {x,y,r};
+        for (int j=0;j<m;j++){
+            if (g[i][j]=='G') g_cnt++;
+            if (g[i][j]=='B') d_cnt++;
+        }
     }
-    vvi g(n);
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            if (j==i) continue;
-            //from i -> j 
-            ld x = abs(a[i][0]-a[j][0]);
-            ld y = abs(a[i][1]-a[j][1]);
-            ld dist = sqrt((x*x)+(y*y));
-            if (dist<=(ld)a[i][2]){
-                g[i].pb(j);
+    if (g_cnt==0) {
+        cout << "Yes" << endl;
+        return;
+    }
+
+    if (n>1){
+        if (g[n-2][m-1]=='B') {
+            cout << "No" << endl;
+            return;
+        }
+    }
+    if (m>1){
+        if (g[n-1][m-2]=='B'){
+            cout << "No" << endl;
+            return;
+        }
+    }
+    // replace all B surrounding and if its a G kiill it, also count G 
+    bool impossible = false;
+    for (int i=0; i<n; i++){
+        for (int j=0;j<m;j++){
+            if (g[i][j]=='B'){
+                for (auto& d: dirs){
+                    int r = i+d[0];
+                    int c = j + d[1];
+                    if (r<0 || r>=n || c<0 || c>=m) continue;
+                    if (g[r][c]=='G'){
+                        impossible = true;
+                    } else if (g[r][c]=='.') g[r][c]='#'; // make it a wall 
+                }
             }
         }
     }
-    int res = 1;
-    for (int i=0; i<n; i++){
-        vb vis(n,false);
-        int reach = go(i,vis,g);
-        res = max(res,reach);
+    // for (int i=0;i<n;i++){
+    //     cerr << g[i] << endl;
+    // }
+    // cerr << endl << endl;
+    if (impossible){
+        cerr << "adjacent" << endl;
+        cout << "No" << endl;
+        return;
     }
-    cout << res << endl;
+    // flood fill 
+    vvb seen(n, vb(m));
+    dfs(n-1,m-1, g, seen);
+    cerr << cnt << " " << g_cnt << endl;
+    if (cnt == g_cnt){
+        cout << "Yes" << endl;
+    } else cout << "No" << endl;
+
+
 };
 
 
@@ -147,10 +168,10 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("moocast.in","r",stdin);
-    // freopen("moocast.out","w",stdout);
+    // freopen("file.in","r",stdin);
+    // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

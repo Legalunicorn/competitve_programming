@@ -65,6 +65,12 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
+// this involved binary seach on a sorted array 
+// which is a massive hint 
+// we preprocess the grazings, then for each cow compute something 
+// we only care about the max distance between the currrent cow and any grazing 
+// I read th editorial and still dont understand the question 
+// the premise makes no logical sense in the first place.
 
 
 void solve(){

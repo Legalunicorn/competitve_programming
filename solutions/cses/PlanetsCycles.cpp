@@ -6,31 +6,8 @@
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 
   */
-// #include <iostream>
-// #include <cstdio>
-// #include <cstdlib>
-// #include <algorithm>
-// #include <cmath>
-// #include <vector>
-// #include <set>
-// #include <map>
-// #include <unordered_set>
-// #include <unordered_map>
-// #include <queue>
-// #include <ctime>
-// #include <cassert>
-// #include <complex>
-// #include <string>
-// #include <cstring>
-// #include <chrono>
-// #include <random>
-// #include <bitset>
-// #include <iomanip>
-// #include <functional>
-// #include <numeric>
-// #include <stack>
-// #include <array>
-#include "bits/stdc++.h"
+
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace chrono;
@@ -94,51 +71,47 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-/*
-   from each cow, check if there is a connection to another every other cow, 
-   basically draw a graph
-   then, from every cow we perform a dfs for the most cows reached.
-   n^n + n^n time o
-   */
-
-int go(int i, vb& vis, vvi& g){
-    int cnt = 1;
-    vis[i] = true;
-    for (int v: g[i]){
-        if (vis[v]) continue;
-        cnt += go(v,vis,g);
+int stopper = -1;
+void dfs(int u, vb& seen, queue<int>& path, vi& succ){
+    path.push(u);
+    int nxt = succ[u];
+    if (seen[nxt]) {
+        stopper = nxt;
+        return;
     }
-    return cnt;
+    dfs(nxt,seen,path,succ);
+    
 }
 
 void solve(){
     int n;
     cin >> n;
-    vvi a(n);
+    vi a(n);
     for (int i=0;i<n;i++){
-        int x,y,r; cin >> x >> y >> r;
-        a[i] = {x,y,r};
+        int x; cin >> x;
+        a[i] = x-1; //success funcctions 
     }
-    vvi g(n);
-    for (int i=0;i<n;i++){
-        for (int j=0;j<n;j++){
-            if (j==i) continue;
-            //from i -> j 
-            ld x = abs(a[i][0]-a[j][0]);
-            ld y = abs(a[i][1]-a[j][1]);
-            ld dist = sqrt((x*x)+(y*y));
-            if (dist<=(ld)a[i][2]){
-                g[i].pb(j);
+    vi score(n,0);
+    vb seen(n)
+    queue<int> path;
+    for (int i=0; i<n; i++){
+        if (!seen[i]){
+            path = queue<int>();
+            dfs(i,seen,path,a);
+            // pop from queue;
+            int ans = 0;
+            int val = path.size();:
+            bool freeze = f
+            while(!q.empty()){
+                int top = q.pop();
+                score[top] = val;
+                if ()
+
             }
+
         }
     }
-    int res = 1;
-    for (int i=0; i<n; i++){
-        vb vis(n,false);
-        int reach = go(i,vis,g);
-        res = max(res,reach);
-    }
-    cout << res << endl;
+ 
 };
 
 
@@ -147,8 +120,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("moocast.in","r",stdin);
-    // freopen("moocast.out","w",stdout);
+    // freopen("file.in","r",stdin);
+    // freopen("file.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();

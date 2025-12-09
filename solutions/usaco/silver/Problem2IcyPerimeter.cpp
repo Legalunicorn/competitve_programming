@@ -6,31 +6,8 @@
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 
   */
-// #include <iostream>
-// #include <cstdio>
-// #include <cstdlib>
-// #include <algorithm>
-// #include <cmath>
-// #include <vector>
-// #include <set>
-// #include <map>
-// #include <unordered_set>
-// #include <unordered_map>
-// #include <queue>
-// #include <ctime>
-// #include <cassert>
-// #include <complex>
-// #include <string>
-// #include <cstring>
-// #include <chrono>
-// #include <random>
-// #include <bitset>
-// #include <iomanip>
-// #include <functional>
-// #include <numeric>
-// #include <stack>
-// #include <array>
-#include "bits/stdc++.h"
+
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace chrono;
@@ -94,51 +71,57 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-/*
-   from each cow, check if there is a connection to another every other cow, 
-   basically draw a graph
-   then, from every cow we perform a dfs for the most cows reached.
-   n^n + n^n time o
-   */
-
-int go(int i, vb& vis, vvi& g){
-    int cnt = 1;
-    vis[i] = true;
-    for (int v: g[i]){
-        if (vis[v]) continue;
-        cnt += go(v,vis,g);
+int param = 0;
+int area = 0;
+void dfs(int r, int c, vector<string>& g, vvb& seen){
+    // firstly add to the param
+    seen[r][c] = true;
+    area++;
+    int n = seen.size();
+    int sides = 0;
+    for (auto& d: dirs){
+        int row  = r+d[0];
+        int col  = c+d[1];
+        if (row<0 || row>=n || col<0 || col>=n) continue;
+        if (g[row][col]=='#'){
+            sides++;
+            if (!seen[row][col]){
+                dfs(row,col,g,seen);
+            }
+        }    
     }
-    return cnt;
+    param += (4-sides); 
 }
 
 void solve(){
     int n;
     cin >> n;
-    vvi a(n);
+    vector<string> g(n);
     for (int i=0;i<n;i++){
-        int x,y,r; cin >> x >> y >> r;
-        a[i] = {x,y,r};
+        string s; cin >> s;
+        g[i] = s;
     }
-    vvi g(n);
+    vvb seen(n,vb(n)); 
+    int max_area = 0;
+    int max_param = 0;
+    debugv(g);
     for (int i=0;i<n;i++){
         for (int j=0;j<n;j++){
-            if (j==i) continue;
-            //from i -> j 
-            ld x = abs(a[i][0]-a[j][0]);
-            ld y = abs(a[i][1]-a[j][1]);
-            ld dist = sqrt((x*x)+(y*y));
-            if (dist<=(ld)a[i][2]){
-                g[i].pb(j);
+            if (g[i][j]=='#' && !seen[i][j]){
+                // do a dfs 
+                param = 0;
+                area = 0;
+                dfs(i,j,g,seen);
+                if (area>max_area){
+                    max_area = area;
+                    max_param = param;
+                } else if (area == max_area){
+                    max_param = min(max_param, param);
+                }
             }
         }
     }
-    int res = 1;
-    for (int i=0; i<n; i++){
-        vb vis(n,false);
-        int reach = go(i,vis,g);
-        res = max(res,reach);
-    }
-    cout << res << endl;
+    cout << max_area << " " << max_param << endl;
 };
 
 
@@ -147,8 +130,8 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("moocast.in","r",stdin);
-    // freopen("moocast.out","w",stdout);
+    freopen("perimeter.in","r",stdin);
+    freopen("perimeter.out","w",stdout);
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();
