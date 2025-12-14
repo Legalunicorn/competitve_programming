@@ -5,7 +5,7 @@
 using namespace std;
 using namespace chrono;
 using namespace __gnu_pbds;
-
+ 
 //template 
 // distinct - pbds 
 template <class T> using ordered_set = tree<T, null_type,
@@ -65,90 +65,54 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-using vi = vector<int>;
-using vvi = vector<vi>;
-using vb = vector<bool>;
-#define pb push_back
-class Solution {
-public:
 
-    void dfs(int u, vb& seen, vvi& g, set<int>& st, vi& pos, int id){
-        pos[u] = id;
-        seen[u] = true;
-        st.insert(u);
-        for (int v: g[u]){
-            if (!seen[v]){
-                dfs(v,seen,g,st,pos,id);
-            }
-        }
+void solve(){
+    int n;
+    cin >> n;
+    vi a(n);
+    vpi g(n);
+    for (int i=0;i<n;i++){
+        int x; cin >> x;
+        g[i] ={x,i}; 
     }
-    vector<int> processQueries(int n, vector<vector<int>>& con, vector<vector<int>>& q) {
-        vector<bool> status(n,true); //all online
-        vvi g(n);
-        vi pos(n);
-        vb seen(n,false);
-        map<int,set<int>> glob;
-        int id = 0;
-        for (const auto& e: con){
-            int u = e[0], v = e[1];
-            g[--u].pb(--v);
-            g[v].pb(u);
+    sort(g.begin(),g.end());
+    ll res = 1;
+    int start = g[0].S;
+    int low = start, high = start; // left and right pos
+    ordered_set<int> pb;
+    pb.insert(start);
+    for (int b = 1; b<n;b++){
+        
+        int inside = b+1; 
+        int id = g[b].S;
+        pb.insert(id);
+        if (id<low || id>high){
+            res += pb.size();
+        } else{
+            int pos = pb.order_of_key(id);
+            int left = pos+1;
+            int right = (b+1) - pos;
+            ll val = ((ll)(right))*left;
+            res += val;
         }
-        for (int i=0;i <n;i++){
-            if (!seen[i]){
-                set<int> tmp;
-                dfs(i,seen,g,tmp,pos,id);
-                glob[id] = tmp;
-                id++;
-            }
-        }
+        low = min(low,id);
+        high = max(high,id);
 
-        vi res;
-        for (const auto& e: q ){
-            int id = e[0], u = e[1]-1;
-            if (id==1){
-                if (status[id]){
-                    res.pb(id+1);
-                } else{
-                    set<int> items = glob[pos[u]];
-                    if (items.size()>0){
-                        int v = *items.begin();
-                        res.pb(v+1);
-                    } else{
-                        res.pb(-1);
-                    }
-                }
-            } else{
-                status[u] = false;
-                glob[pos[u]].erase(u);
-            }
-        }
-
-        return res;
-        // dfs
 
     }
+    cout << res << endl;
+
 };
-/*
-connected componet forms a power grid 
-no necessarily all stations are connected
-disjoint graph 
-
-we can only switch off a node (not turn on)
-
-use the edges to perform a dsu
-each group to havw a set of ids 
 
 
-*/
+
 int main(){
+
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
-
-
     int T =1;
     // cin >> T; 
     auto start1 = high_resolution_clock::now();
@@ -159,13 +123,4 @@ int main(){
     auto duration = duration_cast<microseconds>(stop1-start1);
     cerr << "Time: " << duration.count() / 1000 << " ms" << endl;
     return 0;
-}
-
-for (int i = 0; i < n; i++) {
-    cout << a[i] << endl;
-
-}
-
-for (int i = 0; i < n; i++) {
-    cout << a[i] << endl;
 }

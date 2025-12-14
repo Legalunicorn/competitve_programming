@@ -70,138 +70,75 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
+// TAG_TO_REVIEW
+// "Easy" was a lie 
+// I gave in an look at the solution, took a while to digest but it makes sense  
+//
+// LEAERNING POINT: 
+// the key idea is bounds, pigeon hole principle etc, 
+// n = 12, so the amount of different strings u can get is small (2^n)
+// this captures the brute force idea technically, but we reduce the limits of the brute force 
+// for 1. every pair of strings, 2. every possible k (less than 100)
+// I have had both the idea to use XOR, as well as k=0 to k = 100, but didnt piece anything together 
+//
+// Summarised idea
+// 1. for every subset -> there is an associated WU value 
+// 2. for every initial string -> there is a count, so we change the size of input to (2^n)
+// 3. for every possible input, we can match against all other pairs (2^n * 2^n) and get the score 
+// 4. ignore scores above MAX_K, otherwise for its k score, we add the number of string 
+// 5. so now for  input we know the amount of pairs for each score k = 0 to k = MAX 
+// 6. do the prefix sum to get the cummulative score for k and all k smaller 
+// 7. answer the queries 
 
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
-            }
-        }
-    }
-    return prime;
-};
-
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n, vector<bool> primes){
-    // vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
-    }
-    return res;
-};
-
-vector<int> prime_factors(int n,vb primes){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m, primes);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
-    }
-    if (n>1){
-        res.push_back(n);
-    }
-    return res;
-}
-
-/*
-
-
-idea for brute force is there 
-
-might improve with preprocessing maybe?
-
-
-maybe there is some prunning trick
-
-maybe when we insert -> sth
-
-maybe lcm or gcd 
-
-
-why does the algo go to n^2?
-
-how can that happen? 
-
-
-
-*/
 void solve(){
-    int n;
-    ll k;
-    cin >> n >> k;
-    vl a(n);
-    for (auto& z:a) cin >> z;
-    sort(all(a)); // small to large
-    set<ll> st;
-    set<ll> every;
-    every.insert(a[0]);
-    st.insert(a[0]);
-    map<ll,ll> mul;
-    mul[a[0]] = 1;
-    // O(n) for a
-    for (int i=1; i<n; i++){
-        every.insert(a[i]);
-        bool found = false;
-        ll curr = a[i];
-        for (ll x: st){
-            if (curr%x==0){
-                found = true;
-                break;
-            }
-        }
+    int n,m,q; 
+    cin >> n >> m >> q;
+    int TOTAL = (1 << n);
+    int KMAX = 100;
+    // wu valis 
+    vi vals_wu(n);
+    for (auto& z: vals_wu) cin >> z; 
 
-        if (!found) {
-            ll need = k/curr;
-            if (need > (n-i)){
-                cout << -1 << endl;
-                return;
-            }
-            st.insert(curr);
-            mul[curr] = 1;
-        } 
-    }
-    for (ll r: st){
-        // cerr << "checking: " << r << endl;
-        for (ll m = 2; m<=(n+3) && (r*m)<=k ;m++){
-            ll x = r*m;
-            // cerr << x << " ";
-            if (!every.count(x)){
-                cout << -1 << endl;
-                return;
-            }
-        }
-        // cerr << endl;
+    vi wu_score(TOTAL);
+    for (int i= 0; i<TOTAL; i++){
+        for (int j =0; j<n;j++) if ( (i>>j) & 1) wu_score[i] += vals_wu[j];
     }
 
-    /*
-    check the k limit condition? how
-    mul[v] 
-    */
-    cout << st.size() << endl;
-    for (auto x: st) cout << x << " ";
-    cout << endl;
-    // vb primes = gen_sieve(100005);
-    
+    // get freuency 
+    vi mfreq(TOTAL);
+    for (int i =0; i<m; i++){
+        string s;
+        cin >> s; 
+        int val = 0;
+        for (int j=0; j<n; j++){
+            if (s[j]=='1') val += (1<<j);
+        }
+        mfreq[val]++; // new instance
+    }
+    int full = (1<<n)-1;
+    vvi prefix(TOTAL, vi(KMAX+1)); // 0 -> 100 
+    for (int a = 0; a < TOTAL ; a++){
+        for (int b =0; b < TOTAL; b++ ){
+            int opp = a ^ b;
+            int score = wu_score[full] - wu_score[opp];  
+            if (score <= KMAX) prefix[a][score] += mfreq[b];
+        }
+        for (int i=1; i<=KMAX; i++) prefix[a][i] += prefix[a][i-1];
+    }
+
+    // now we read in the inputs 
+    while (q--){
+        string t;
+        int k;
+        cin >> t >> k;
+        // convert t to substrgins 
+        int val = 0;
+        for (int i=0; i<n; i++) if (t[i]=='1') val += (1 << i);
+        int ans = prefix[val][k];
+        cout << ans << endl;
+    }
+
 };
-
-/*
-    if B = A, it is perfectly fine 
-    bi and bj can have common multiples
-
-    the divisiors form a partial order
-    we just take all the non comparable min elements it should be optimal
-    how though? 
-    get the prime facors
-
-*/
 
 
 int main(){
@@ -212,7 +149,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

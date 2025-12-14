@@ -7,6 +7,7 @@
 
   */
 
+#include <algorithm>
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -71,138 +72,61 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
-            }
+ll cost(int a, int b, vvi& groups){
+    ll mn = INF; 
+    // construct the min cost from id_a to id_b 
+    for (const auto& x: groups[a]){
+        int pos = lower_bound(all(groups[b]),x) - groups[b].begin();
+        if (pos>0) mn = min(mn, (ll)abs(x-groups[b][pos-1]));
+        if (pos<groups[b].size()) mn = min(mn,(ll)abs(x-groups[b][pos]));
+        //
+    }
+    return mn*mn;
+
+};
+
+void dfs(int u, vi& comp, int id, vvi& g){
+    comp[u] = id;
+    for (int v:g[u]){
+        if (comp[v]==-1){
+            dfs(v,comp,id,g);
         }
     }
-    return prime;
+
 };
 
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n, vector<bool> primes){
-    // vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
-    }
-    return res;
-};
-
-vector<int> prime_factors(int n,vb primes){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m, primes);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
-    }
-    if (n>1){
-        res.push_back(n);
-    }
-    return res;
-}
-
-/*
-
-
-idea for brute force is there 
-
-might improve with preprocessing maybe?
-
-
-maybe there is some prunning trick
-
-maybe when we insert -> sth
-
-maybe lcm or gcd 
-
-
-why does the algo go to n^2?
-
-how can that happen? 
-
-
-
-*/
 void solve(){
-    int n;
-    ll k;
-    cin >> n >> k;
-    vl a(n);
-    for (auto& z:a) cin >> z;
-    sort(all(a)); // small to large
-    set<ll> st;
-    set<ll> every;
-    every.insert(a[0]);
-    st.insert(a[0]);
-    map<ll,ll> mul;
-    mul[a[0]] = 1;
-    // O(n) for a
-    for (int i=1; i<n; i++){
-        every.insert(a[i]);
-        bool found = false;
-        ll curr = a[i];
-        for (ll x: st){
-            if (curr%x==0){
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            ll need = k/curr;
-            if (need > (n-i)){
-                cout << -1 << endl;
-                return;
-            }
-            st.insert(curr);
-            mul[curr] = 1;
-        } 
+    int n, m;
+    cin >> n >> m;
+    vvi g(n);
+    for (int i = 0; i < m; i++){
+        int u, v; 
+        cin >> u >> v;
+        u--;
+        v--;
+        g[u].pb(v);
+        g[v].pb(u);
     }
-    for (ll r: st){
-        // cerr << "checking: " << r << endl;
-        for (ll m = 2; m<=(n+3) && (r*m)<=k ;m++){
-            ll x = r*m;
-            // cerr << x << " ";
-            if (!every.count(x)){
-                cout << -1 << endl;
-                return;
-            }
+    int id  = -1;
+    vi comp(n,-1);
+    for (int i = 0; i < n; i++){
+        if (comp[i]==-1){
+            dfs(i,comp,++id,g);
         }
-        // cerr << endl;
     }
+    // id -> now the number of components 
+    vvi groups(id+1);
+    for (int i = 0; i < n; i++) groups[comp[i]].pb(i); //put the vertices in groups 
+    ll res = cost(comp[0], comp[n-1], groups);
+    // debugm(groups);
+    // we compute two cost using C 
+    for (int c = 1; c < id; c++){
+        ll evl = cost(c,comp[0], groups) + cost(c,comp[n-1],groups);
+        res = min(res,evl);
+    }
+    cout << res << endl;
 
-    /*
-    check the k limit condition? how
-    mul[v] 
-    */
-    cout << st.size() << endl;
-    for (auto x: st) cout << x << " ";
-    cout << endl;
-    // vb primes = gen_sieve(100005);
-    
 };
-
-/*
-    if B = A, it is perfectly fine 
-    bi and bj can have common multiples
-
-    the divisiors form a partial order
-    we just take all the non comparable min elements it should be optimal
-    how though? 
-    get the prime facors
-
-*/
-
 
 int main(){
 

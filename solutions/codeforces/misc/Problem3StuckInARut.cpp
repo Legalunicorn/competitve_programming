@@ -70,138 +70,55 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
-            }
-        }
-    }
-    return prime;
-};
-
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n, vector<bool> primes){
-    // vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
-    }
-    return res;
-};
-
-vector<int> prime_factors(int n,vb primes){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m, primes);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
-    }
-    if (n>1){
-        res.push_back(n);
-    }
-    return res;
-}
-
 /*
+    I gave in and went to the solutions 
+    there was two answer provided, one far more complicated with a DFS 
+    DFS -> we assign blame and map it to a tree problem, then the answer is the 
+    size of the subtree for each node. this pretty impressive idea, if the idea to model 
+    this to a tree this would be a much harder problem 
 
-
-idea for brute force is there 
-
-might improve with preprocessing maybe?
-
-
-maybe there is some prunning trick
-
-maybe when we insert -> sth
-
-maybe lcm or gcd 
-
-
-why does the algo go to n^2?
-
-how can that happen? 
-
-
+    the alternative solution is first split east and north cows, then sort them 
+    we sort them so that we can stop the right cows in order 
+    the bottom left collision would stop cows, and so the future collisions can be skipped 
+    then we build up the blame using a dp like solutoin dp[i] += (1 + dp[j])
 
 */
 void solve(){
     int n;
-    ll k;
-    cin >> n >> k;
-    vl a(n);
-    for (auto& z:a) cin >> z;
-    sort(all(a)); // small to large
-    set<ll> st;
-    set<ll> every;
-    every.insert(a[0]);
-    st.insert(a[0]);
-    map<ll,ll> mul;
-    mul[a[0]] = 1;
-    // O(n) for a
-    for (int i=1; i<n; i++){
-        every.insert(a[i]);
-        bool found = false;
-        ll curr = a[i];
-        for (ll x: st){
-            if (curr%x==0){
-                found = true;
-                break;
+    cin >> n;
+    vi xpos(n), ypos(n);
+    vi east,north;
+    for (int i=0; i<n; i++){
+        char dir;
+        cin >> dir >> xpos[i] >> ypos[i];
+        if (dir=='E') east.pb(i);
+        else north.pb(i);                                                                                                                       
+    }
+    sort(all(east),[&](const int& a, const int& b){
+            return ypos[a]<ypos[b];
+    });
+    sort(all(north),[&](const int& a, const int&b){return xpos[a]<xpos[b];});
+    vl res(n,0); // infinite
+    vb stop(n);
+    for (auto r: east){
+        for (auto u: north){
+            if (stop[r] || stop[u]) continue;
+            if (xpos[u] < xpos[r]) continue;
+            if (ypos[r] < ypos[u]) continue;
+            int utime = ypos[r] - ypos[u];
+            int rtime = xpos[u] - xpos[r];
+            if (utime == rtime) continue; //no collisions
+            else if (utime < rtime){
+                stop[r] = true;
+                res[u] += (1 + res[r]);
+            } else{
+                stop[u] = true;
+                res[r] += (1 + res[u]);
             }
         }
-
-        if (!found) {
-            ll need = k/curr;
-            if (need > (n-i)){
-                cout << -1 << endl;
-                return;
-            }
-            st.insert(curr);
-            mul[curr] = 1;
-        } 
     }
-    for (ll r: st){
-        // cerr << "checking: " << r << endl;
-        for (ll m = 2; m<=(n+3) && (r*m)<=k ;m++){
-            ll x = r*m;
-            // cerr << x << " ";
-            if (!every.count(x)){
-                cout << -1 << endl;
-                return;
-            }
-        }
-        // cerr << endl;
-    }
-
-    /*
-    check the k limit condition? how
-    mul[v] 
-    */
-    cout << st.size() << endl;
-    for (auto x: st) cout << x << " ";
-    cout << endl;
-    // vb primes = gen_sieve(100005);
-    
+    for (int r: res) cout << r  << endl;
 };
-
-/*
-    if B = A, it is perfectly fine 
-    bi and bj can have common multiples
-
-    the divisiors form a partial order
-    we just take all the non comparable min elements it should be optimal
-    how though? 
-    get the prime facors
-
-*/
 
 
 int main(){
@@ -212,7 +129,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

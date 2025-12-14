@@ -70,136 +70,102 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
+// very cool idea 
+// EXANDING the graph by mapping 1 step into 2 
+// Creating a boundaring and limitting inside it (minx, maxx)
+// tooks hints from solution but rest is trivial and did on my own
 
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
-            }
-        }
-    }
-    return prime;
-};
+const int MAX_N = 4005;
+int grid[MAX_N][MAX_N] = {0};
+bool seen[MAX_N][MAX_N] = {false};
 
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n, vector<bool> primes){
-    // vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
-    }
-    return res;
-};
+void dfs(int r, int c,int a, int b, int e, int d){
+    seen[r][c] = true;
+    for(const vi& dir:dirs){
+        int row = r+dir[0];
+        int col = c+dir[1];
+        if (row<a || row>b| col<e || col>d || seen[row][col] || grid[row][col]==-1) continue;
+        dfs(row,col,a,b,e,d);
 
-vector<int> prime_factors(int n,vb primes){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m, primes);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
     }
-    if (n>1){
-        res.push_back(n);
-    }
-    return res;
 }
 
-/*
-
-
-idea for brute force is there 
-
-might improve with preprocessing maybe?
-
-
-maybe there is some prunning trick
-
-maybe when we insert -> sth
-
-maybe lcm or gcd 
-
-
-why does the algo go to n^2?
-
-how can that happen? 
-
-
-
-*/
 void solve(){
     int n;
-    ll k;
-    cin >> n >> k;
-    vl a(n);
-    for (auto& z:a) cin >> z;
-    sort(all(a)); // small to large
-    set<ll> st;
-    set<ll> every;
-    every.insert(a[0]);
-    st.insert(a[0]);
-    map<ll,ll> mul;
-    mul[a[0]] = 1;
-    // O(n) for a
-    for (int i=1; i<n; i++){
-        every.insert(a[i]);
-        bool found = false;
-        ll curr = a[i];
-        for (ll x: st){
-            if (curr%x==0){
-                found = true;
-                break;
+    cin >> n;
+    string s;
+    cin >> s;
+    int x = MAX_N/2;
+    int y = MAX_N/2;
+    cerr << s << endl;
+    // memset(grid,0,sizeof(grid));
+    // memset(seen,false,sizeof(seen));
+    int minx = x, maxx = x;
+    int miny =y, maxy = y;
+    for (char c: s){
+        if (c=='N'){
+            grid[x][y-1] = -1;
+            grid[x][y-2] = -1;
+            y-=2;
+            miny = min(miny,y);
+        } else if (c=='E'){
+            grid[x+1][y] = -1;
+            grid[x+2][y] = -1;
+            x += 2;
+            maxx = max(maxx,x);
+        } else if (c=='S'){
+            grid[x][y+1] = -1;
+            grid[x][y+2] = -1;
+            y += 2;
+            maxy = max(maxy,y);
+        } else {
+            grid[x-1][y] = -1;
+            grid[x-2][y] = -1;
+            x -=2;
+            minx = min(minx,x);
+        }
+    }
+    minx--; miny--;
+    maxx++; maxy++;
+    cerr << "ok " << endl;
+    // flood fill 
+    int res = 0;
+    for (int i=minx; i<=maxx; i++){
+        for (int j=miny; j<=maxy; j++){
+            if (grid[i][j]!=-1 && !seen[i][j]){
+                res++;
+                dfs(i,j,minx,maxx,miny,maxy);
             }
         }
-
-        if (!found) {
-            ll need = k/curr;
-            if (need > (n-i)){
-                cout << -1 << endl;
-                return;
-            }
-            st.insert(curr);
-            mul[curr] = 1;
-        } 
-    }
-    for (ll r: st){
-        // cerr << "checking: " << r << endl;
-        for (ll m = 2; m<=(n+3) && (r*m)<=k ;m++){
-            ll x = r*m;
-            // cerr << x << " ";
-            if (!every.count(x)){
-                cout << -1 << endl;
-                return;
-            }
-        }
-        // cerr << endl;
     }
 
-    /*
-    check the k limit condition? how
-    mul[v] 
-    */
-    cout << st.size() << endl;
-    for (auto x: st) cout << x << " ";
-    cout << endl;
-    // vb primes = gen_sieve(100005);
-    
+    cout << res -1 << endl;
 };
-
 /*
-    if B = A, it is perfectly fine 
-    bi and bj can have common multiples
+    its not clear in the question how the partition works 
+    if he just makes a squnce is the "area" inside an area or not?? 
+    base on the example, the fence are infinitely thin 
+    so a square still produces an areas 
 
-    the divisiors form a partial order
-    we just take all the non comparable min elements it should be optimal
-    how though? 
-    get the prime facors
+    the second issue is that how do we find connected componenets? 
+    we might have to "expand" the graphs or something so that the fence takes up data 
+    this should work but its hard to implement?
+    for example we just 
+
+    AH fuck. why not just used a [5000][5000] array and start in the middle 
+
+    then every action we just double it 
+
+    how do we define a partition? 
+    the ansewr is just the number of connected compononets -1 
+    since N <= 1000 
+
+    he can move at most 1000 steps 
+    the tricky part is that we are on an infinite plane 
+    - process the string first, find the min x and min y 
+    - then we normalise the plane by min x min y 
+    - now every point is possible 
+    - create a grid and paint the graph 
 
 */
 
@@ -209,10 +175,10 @@ int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // freopen("file.in","r",stdin);
-    // freopen("file.out","w",stdout);
+    freopen("gates.in","r",stdin);
+    freopen("gates.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

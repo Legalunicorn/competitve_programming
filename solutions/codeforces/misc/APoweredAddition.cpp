@@ -71,137 +71,39 @@ string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
 
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
-            }
-        }
-    }
-    return prime;
-};
-
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n, vector<bool> primes){
-    // vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
-    }
-    return res;
-};
-
-vector<int> prime_factors(int n,vb primes){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m, primes);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
-    }
-    if (n>1){
-        res.push_back(n);
+ll binpow(ll a, ll b){
+    ll res = 1;
+    while(b>0){
+        if (b & 1) res = res *a;
+        a = a * a;
+        b >>= 1;
     }
     return res;
 }
 
-/*
-
-
-idea for brute force is there 
-
-might improve with preprocessing maybe?
-
-
-maybe there is some prunning trick
-
-maybe when we insert -> sth
-
-maybe lcm or gcd 
-
-
-why does the algo go to n^2?
-
-how can that happen? 
-
-
-
-*/
 void solve(){
+    // just change the delta?
+    // then update the numbet 
+    int res = 0; 
     int n;
-    ll k;
-    cin >> n >> k;
+    cin >> n;
     vl a(n);
-    for (auto& z:a) cin >> z;
-    sort(all(a)); // small to large
-    set<ll> st;
-    set<ll> every;
-    every.insert(a[0]);
-    st.insert(a[0]);
-    map<ll,ll> mul;
-    mul[a[0]] = 1;
-    // O(n) for a
-    for (int i=1; i<n; i++){
-        every.insert(a[i]);
-        bool found = false;
-        ll curr = a[i];
-        for (ll x: st){
-            if (curr%x==0){
-                found = true;
-                break;
-            }
+    ll carry = 0;
+    for (auto& z: a) cin >> z;
+    for (int i=1;i<n;i++){
+        a[i] += carry;
+        ll del = a[i]-a[i-1];
+        if (del>=0) continue;
+        int pow = 0;
+        int val = 1; 
+        while(val<del){
+            val *= 2;
+            pow ++;
         }
-
-        if (!found) {
-            ll need = k/curr;
-            if (need > (n-i)){
-                cout << -1 << endl;
-                return;
-            }
-            st.insert(curr);
-            mul[curr] = 1;
-        } 
+        a[i] += val;
+        res = max(res,pow+1);
     }
-    for (ll r: st){
-        // cerr << "checking: " << r << endl;
-        for (ll m = 2; m<=(n+3) && (r*m)<=k ;m++){
-            ll x = r*m;
-            // cerr << x << " ";
-            if (!every.count(x)){
-                cout << -1 << endl;
-                return;
-            }
-        }
-        // cerr << endl;
-    }
-
-    /*
-    check the k limit condition? how
-    mul[v] 
-    */
-    cout << st.size() << endl;
-    for (auto x: st) cout << x << " ";
-    cout << endl;
-    // vb primes = gen_sieve(100005);
-    
 };
-
-/*
-    if B = A, it is perfectly fine 
-    bi and bj can have common multiples
-
-    the divisiors form a partial order
-    we just take all the non comparable min elements it should be optimal
-    how though? 
-    get the prime facors
-
-*/
 
 
 int main(){
@@ -212,7 +114,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

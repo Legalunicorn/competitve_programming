@@ -70,138 +70,60 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
+// bug -> the connected of two diameters IS NOT guaranteed to be the diamter 
+// of the new tree. res = max({res,d1,d2});
 
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
-            }
+pi dfs1(int u, int p, vvi& g, int d){
+    pi res = {u,d};
+    for (int v:g[u]){
+        if (v==p) continue;
+        pi evl = dfs1(v,u,g,d+1);
+        if (evl.S > res.S){
+            res = evl;
         }
-    }
-    return prime;
-};
-
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n, vector<bool> primes){
-    // vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
-    }
-    return res;
-};
-
-vector<int> prime_factors(int n,vb primes){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m, primes);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
-    }
-    if (n>1){
-        res.push_back(n);
     }
     return res;
 }
 
-/*
+int diameter(int n, vvi& g){
+    // dfs 1. -> find the furtherst path 
+    // dfs 2 -> use the furthest node from 1 and find further node. 
+    vi dist(n,0);
+    pi res1 = dfs1(0,-1,g,0); 
+    pi res2 = dfs1(res1.F,-1,g,0);
+    return res2.S;
+    // dfs n-1
+    // return pi ? <node,dist> 
+    //
+}
 
-
-idea for brute force is there 
-
-might improve with preprocessing maybe?
-
-
-maybe there is some prunning trick
-
-maybe when we insert -> sth
-
-maybe lcm or gcd 
-
-
-why does the algo go to n^2?
-
-how can that happen? 
-
-
-
-*/
 void solve(){
-    int n;
-    ll k;
-    cin >> n >> k;
-    vl a(n);
-    for (auto& z:a) cin >> z;
-    sort(all(a)); // small to large
-    set<ll> st;
-    set<ll> every;
-    every.insert(a[0]);
-    st.insert(a[0]);
-    map<ll,ll> mul;
-    mul[a[0]] = 1;
-    // O(n) for a
-    for (int i=1; i<n; i++){
-        every.insert(a[i]);
-        bool found = false;
-        ll curr = a[i];
-        for (ll x: st){
-            if (curr%x==0){
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            ll need = k/curr;
-            if (need > (n-i)){
-                cout << -1 << endl;
-                return;
-            }
-            st.insert(curr);
-            mul[curr] = 1;
-        } 
+    // claculate the diameter of both trees 
+    int n; cin >> n;
+    vvi g(n);
+    for (int i=0;i<n-1;i++){
+        int u,v; cin >> u >> v;
+        u--; v--;
+        g[u].pb(v);
+        g[v].pb(u); 
     }
-    for (ll r: st){
-        // cerr << "checking: " << r << endl;
-        for (ll m = 2; m<=(n+3) && (r*m)<=k ;m++){
-            ll x = r*m;
-            // cerr << x << " ";
-            if (!every.count(x)){
-                cout << -1 << endl;
-                return;
-            }
-        }
-        // cerr << endl;
+    int m; cin >> m;
+    vvi f(m);
+    for (int i=0;i<m-1;i++){
+        int u,v; cin >> u >> v;
+        u--;v--;
+        f[u].pb(v);
+        f[v].pb(u);
     }
-
-    /*
-    check the k limit condition? how
-    mul[v] 
-    */
-    cout << st.size() << endl;
-    for (auto x: st) cout << x << " ";
-    cout << endl;
-    // vb primes = gen_sieve(100005);
-    
+    int d1 = diameter(n,g);
+    int d2 = diameter(m,f);
+    cerr << d1 << "  " << d2 << endl;
+    int res = ((d1+1)/2) + ((d2+1)/2) + 1;
+    res = max({res,d1,d2});
+    cout << res << endl;
+    // calculate the domaeteres 
+    //
 };
-
-/*
-    if B = A, it is perfectly fine 
-    bi and bj can have common multiples
-
-    the divisiors form a partial order
-    we just take all the non comparable min elements it should be optimal
-    how though? 
-    get the prime facors
-
-*/
 
 
 int main(){
@@ -212,7 +134,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();
