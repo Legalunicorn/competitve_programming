@@ -17,13 +17,13 @@ Description:
 
 //SNIPPET_ID:dsu_basic
 struct Dsu{
-private:
+public:
     int n; 
     vector<int> par, size;
-public:
+// public:
     Dsu(int sz){
         n = sz;
-        size.assign(n,0);
+        size.assign(n,1);
         par.assign(n,0);
         iota(par.begin(),par.end(),0);
     }
