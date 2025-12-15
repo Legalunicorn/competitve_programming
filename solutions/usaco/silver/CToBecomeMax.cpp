@@ -70,34 +70,79 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-// we can try binary search over number of seconds needed? 
-// we can also try to just run through left to right 
-// and find max power of 2 used? 
-// non decreasing means i = 1 .. N 
-// if a[i] < a[i-1] < -- > then we must update a[i] 
-// we can do so by just making it into a[i-1], using the bar minumum? 
-// find the power of 2 in the differences? 
-// we can only apply each time a max only 
 
+
+bool check(vl& a, ll m, ll k){
+    int n = a.size();
+    for (int i=0;i<n-1;i++){
+        ll left = k;
+        ll v = m;
+        bool valid = true;
+        for (int j=i;j<n;j++){
+            if (j==n-1 && a[j]<v) {
+                valid = false;
+                break;
+            }
+            if (a[j]>=v) return true;
+            ll d = v-a[j];
+            if (left<d){
+                valid = false;
+                break;
+            }
+            left -= d;
+            if (left < 0) {
+                valid = false;
+                break;
+            }
+            v--;
+        }
+        if (valid) return true;
+    }
+    return false;
+}
 void solve(){
     int n;
-    cin >> n;
-    vl a(n);
-    for (auto& z: a) cin >> z;
-    int mx = 0; 
-    ll high = a[0];
-    for (int i=1; i<n; i++){
-        if (a[i]<high){
-            ll diff = high - a[i];
-            for (int i=0;i<31;i++){
-                if ((diff>>i)&1) mx = max(mx,i+1);
-            }
-        } else{
-            high = max(high,a[i]);
-        }
+    ll k;
+    cin >> n >> k;
+    vl a(n); 
+    for (auto& z:a) cin >> z; 
+    ll l = MAX(a);
+    ll r = INF;
+    ll res = l;
+    while(l<=r){
+        ll m = l+(r-l)/2;
+        bool ans = check(a,m,k);
+        if (ans){
+            res = m;
+            l = m +1;
+        } else r = m - 1;
+        // n is brute forceable 
+        // do a check
     }
-    cout << mx << endl;
+    cout << res << endl;
 };
+/*
+
+we need to be strategic where we imlement the greedy? 
+if we have a certain value 
+
+the pattern is 
+
+n, n-1,  n-2,  n -3 , ... 
+
+unless there is an element greater than what its assigned 
+then that takes over 
+how do we implement this? is there a optimal starting point ? 
+1. one of the squares HAS to be the said max 
+2. can we simulate for each square then? 
+3. we kind of need to reverse enginner this 
+
+at no point can the value be greaterh by two 
+
+holy fuck n is only 1000 
+we can just bruteforce 
+
+*/
 
 
 int main(){

@@ -70,34 +70,119 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-// we can try binary search over number of seconds needed? 
-// we can also try to just run through left to right 
-// and find max power of 2 used? 
-// non decreasing means i = 1 .. N 
-// if a[i] < a[i-1] < -- > then we must update a[i] 
-// we can do so by just making it into a[i-1], using the bar minumum? 
-// find the power of 2 in the differences? 
-// we can only apply each time a max only 
+// I think i have quite a complicated solution 
+// 1. construct a tree using the input (reverse the edges of slop)
+// 2. do a dfs and maintain a PQ of max size 10 
+// 3. associate each NODE to the SUM enjoyment and top 10 values 
+// 4. sort the nodes based on difficulty, using custom comparator 
+// 5. do a prefix MAX of the sorted difficulty 
+// 6. for each friend, binary search for diff[node][c] <= skill
+// 7. return the max prefix sum
+//
+//
+//
+// I had the exact same idea as the editorial but failed to implement! 
+// Definitely overthinking it 
 
 void solve(){
+    int MAXC = 11;
     int n;
     cin >> n;
-    vl a(n);
-    for (auto& z: a) cin >> z;
-    int mx = 0; 
-    ll high = a[0];
-    for (int i=1; i<n; i++){
-        if (a[i]<high){
-            ll diff = high - a[i];
-            for (int i=0;i<31;i++){
-                if ((diff>>i)&1) mx = max(mx,i+1);
-            }
-        } else{
-            high = max(high,a[i]);
-        }
+    vl path_enjoy(n), enjoy(n), diff(n), max_vas(n); 
+    diff[0] = 0;
+    enjoy[0] = 0;
+    path_enjoy[0] = 0;
+    vector<pair<int,vl>> mp(n);
+    for (int i = 0; i < n; i++) {
+        mp[i].F = i;
+        mp[i].S.assign(11,0);
     }
-    cout << mx << endl;
+    vvi g(n);
+    for (int i=1;i<n;i++){
+        int end;
+        ll d, e;
+        cin >> end >> d >> e;
+        end--;
+        g[end].pb(i);
+        enjoy[i] = e;
+        diff[i] = d;
+    }
+
+    // multiset<ll> ms;
+    // for (int i=0;i<11;i++) ms.insert(0);
+    auto dfs = [&](auto& dfs, int u, int p, ll tot_enjoy) -> void{
+        path_enjoy[u] = tot_enjoy;
+        if(p != -1){
+            mp[u].S = mp[p].S;
+            mp[u].S.pb(diff[u]);
+
+        }
+
+        for (int v : g[u]){
+            if (v==p) continue;
+            dfs(dfs, v, u, tot_enjoy + enjoy[v]);
+        }
+        // for (int i=0;i<11;i++){
+
+
+    };
+
+    dfs(dfs,0,-1,0LL);
+     for (int i=0;i<n;i++){
+        sort(mp[i].S.rbegin(),mp[i].S.rend());
+        mp[i].S.resize(11);
+        reverse(all(mp[i].S));
+        // for (int j=0; j< 11; j++){
+        //     cerr << mp[i].S[j] << " ";
+        // }
+        // cerr << endl;
+    }   
+
+    sort(all(mp),[&](const auto& p, const auto& q){
+        const vl&  pp = p.S, qq = q.S;
+        for (int i=0;i<11;i++){
+            if(pp[i] < qq[i]) return true;
+            else if (pp[i] > qq[i]) return false;
+        }
+        return path_enjoy[p.F] > path_enjoy[q.F];
+    });
+    
+
+    ll mx = path_enjoy[ mp[0].F ];
+    for (int i=0; i<n; i++){
+        mx = max(mx, path_enjoy[mp[i].F]);
+        max_vas[i] = mx;
+        // for (int j=0; j< 11; j++){
+        //     cerr << mp[i].S[j] << " ";
+        // }
+        // cerr << endl;
+    }
+
+    auto bs = [&](ll lim, int pos){
+        int l = 0, r = n-1;
+        int res = -1;
+        while(l<=r){
+            int m = (l+r)/2;
+            if (mp[m].S[pos] <= lim){
+                res = m;
+                l = m +1;
+            } else r = m -1;
+        }
+        return res;
+    };
+    int m; cin >> m; 
+    for (int i = 0; i<m ;i++){
+        ll s,c;
+        cin >> s >> c;
+        int pos = 10 - c;
+        int ans = bs(s,pos);
+        if (ans==-1) cout << 0 << endl;
+        else cout << max_vas[ans] << endl;
+
+    }
+
 };
+
 
 
 int main(){
@@ -108,7 +193,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

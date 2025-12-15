@@ -70,35 +70,29 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-// we can try binary search over number of seconds needed? 
-// we can also try to just run through left to right 
-// and find max power of 2 used? 
-// non decreasing means i = 1 .. N 
-// if a[i] < a[i-1] < -- > then we must update a[i] 
-// we can do so by just making it into a[i-1], using the bar minumum? 
-// find the power of 2 in the differences? 
-// we can only apply each time a max only 
+
 
 void solve(){
     int n;
     cin >> n;
     vl a(n);
-    for (auto& z: a) cin >> z;
-    int mx = 0; 
-    ll high = a[0];
-    for (int i=1; i<n; i++){
-        if (a[i]<high){
-            ll diff = high - a[i];
-            for (int i=0;i<31;i++){
-                if ((diff>>i)&1) mx = max(mx,i+1);
-            }
-        } else{
-            high = max(high,a[i]);
-        }
-    }
-    cout << mx << endl;
+    for (auto& z:a) cin >> z;
+    for (int i=1;i<n;i++) a[i] ^= a[i-1];
+    ll res = 0;
+    // 
 };
-
+// find every subarray of length 2, theirs xor sum 
+// 1 2 
+// 1 2 3
+// 1 2 3 4
+// 1 2 3 4 5
+//   2 3
+//   2 3 4 
+//   2 3 4 5
+//     3 4 
+//     3 4 5 
+//       4 5
+//
 
 int main(){
 
@@ -108,7 +102,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

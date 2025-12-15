@@ -70,33 +70,29 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-// we can try binary search over number of seconds needed? 
-// we can also try to just run through left to right 
-// and find max power of 2 used? 
-// non decreasing means i = 1 .. N 
-// if a[i] < a[i-1] < -- > then we must update a[i] 
-// we can do so by just making it into a[i-1], using the bar minumum? 
-// find the power of 2 in the differences? 
-// we can only apply each time a max only 
 
+bool check(vl& a, ll a, ll b, ll bombs){
+    // drop b bomes 
+    // store the max time 
+    // calculate the time of capture? 
+    // note that it is not an inifnite plane 
+    // so the robber at a deagw end can only stall as long as he can keep moving 
+    // both move -> no benefit to the robber, only that more bombs go ff 
+    // if hit a wall, the officer will catch up based on their gaps 
+}
 void solve(){
-    int n;
-    cin >> n;
-    vl a(n);
-    for (auto& z: a) cin >> z;
-    int mx = 0; 
-    ll high = a[0];
-    for (int i=1; i<n; i++){
-        if (a[i]<high){
-            ll diff = high - a[i];
-            for (int i=0;i<31;i++){
-                if ((diff>>i)&1) mx = max(mx,i+1);
-            }
-        } else{
-            high = max(high,a[i]);
-        }
+    // seems optimal to spam drop then run, 
+    // the question is when to run because bomb non sintane 
+    ll n,m,a,b;
+    cin >> n >> m >> a >> b;
+    vl a(m);
+    for (auto& z:a) cin >> z;
+    ll r = min(m,abs(a-b)-1);
+    ll l = 0;
+    while(l <= r){
+        ll mid = l+(r-l)/2;
+
     }
-    cout << mx << endl;
 };
 
 
@@ -108,7 +104,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

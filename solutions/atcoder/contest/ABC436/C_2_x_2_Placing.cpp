@@ -76,7 +76,6 @@ void solve(){
     int n,m;
     cin >> n >> m;
     set<pair<int,int>> used;
-    // vvi g(n, vi(n));
     int res = 0;
     for (int i=0;i<m;i++){
         int r,c;
@@ -91,15 +90,6 @@ void solve(){
         used.insert({r+1,c});
         used.insert({r,c+1});
         used.insert({r+1,c+1});
-        // check four 
-        // if (g[r][c] == 0 && g[r+1][c] == 0 && g[r+1][c+1] == 0 && g[r][c+1] == 0){
-        //     res ++;
-        //     g[r][c] = -1;
-        //     g[r+1][c+1] = -1;
-        //     g[r][c+1] = -1;
-        //     g[r+1][c] = -1;
-
-        // }
     }
     cout << res << endl;
 };
