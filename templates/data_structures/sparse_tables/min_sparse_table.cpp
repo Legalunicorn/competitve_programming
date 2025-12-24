@@ -4,7 +4,7 @@ using ll = long long;
 /*
 Created: 2025-11-30 16:45:46
 File: min_sparse_table
-Tested: 
+Tested: https://judge.yosupo.jp/problem/staticrmq 
  __  __     __     ______     ______     ______   
 /\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
 \ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
@@ -12,8 +12,8 @@ Tested:
   \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
 */
 
-template<class T>
 //SNIPPET_ID:sparse_table_o1
+template<class T>
 struct SparseTable{
 public:
     // Modify this part
