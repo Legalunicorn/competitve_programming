@@ -13,8 +13,15 @@ Tested:
 */
 
 template<class T>
+//SNIPPET_ID:sparse_table_o1
 struct SparseTable{
 public:
+    // Modify this part
+    // This Sparse table is for IDEMPOTENT relations only O(1)
+    // For non-idempotent just use a segment tree for O(log n) performance
+    T combine(T a, T b){
+        return min(a,b); //
+    }
 
     SparseTable(int size){
         n = size;
@@ -32,10 +39,8 @@ public:
             for (int i=0; i + (1<<j) - 1 < n; i++){
                 T a = st[i][j-1];
                 T b = st[i+(1<<(j-1))][j-1];
-                
-                // CHECK
-                st[i][j] = min(a,b);
-            }
+                st[i][j] = combine(a,b);
+             }
         }
     }
     
@@ -43,9 +48,7 @@ public:
         int k = logPow[r-l+1];
         T a = st[l][k];
         T b = st[r-(1<<k)+1][k];
-
-        // CHECK
-        return min(a,b);
+        return combine(a,b);
     }
 private:
     vector<vector<T>> st;
@@ -53,6 +56,7 @@ private:
     int n;
     vector<int> logPow;
 };
+//END_SNIPPET:sparse_table_o1
 
 
 
