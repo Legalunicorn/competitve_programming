@@ -44,7 +44,7 @@ public:
         }
     }
     
-    int query(int l, int r){
+    T query(int l, int r){
         int k = logPow[r-l+1];
         T a = st[l][k];
         T b = st[r-(1<<k)+1][k];
