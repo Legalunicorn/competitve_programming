@@ -1,22 +1,12 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-const int MOD = 1e9 + 7;
 /*
-Created: 2025-12-16 00:23:18
-File: mint
-Author: TAKEN FROM BENQ GITHUB  https://github.com/bqi343/cp-notebook/blob/master/Implementations/content/number-theory%20(11.1)/Modular%20Arithmetic/ModInt.h
+Created: 2025-12-30 03:38:38
+File: mint_and_combinatoric
+Author: taken from tinle 
 Test status: 
 Description: 
- * Description: modular arithmetic operations 
- * Source: 
-	* KACTL
-	* https://codeforces.com/blog/entry/63903
-	* https://codeforces.com/contest/1261/submission/65632855 (tourist)
-	* https://codeforces.com/contest/1264/submission/66344993 (ksun)
-	* also see https://github.com/ecnerwala/cp-book/blob/master/src/modnum.hpp (ecnerwal)
- * Verification: 
-	* https://open.kattis.com/problems/modulararithmetic
  __  __     __     ______     ______     ______   
 /\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
 \ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
@@ -25,7 +15,8 @@ Description:
 */
 
 
-//SNIPPET_ID:mint
+//SNIPPET_ID:mint_and_combinatoric
+// TEMPLATE FROM TIN_LE 
 template <int MOD>
 struct mod_int {
     int value;
@@ -76,17 +67,50 @@ struct mod_int {
     friend std::ostream& operator<<(std::ostream &os, const mod_int &a) { os << a.value; return os; }
     friend std::istream& operator>>(std::istream &is, mod_int &a) { ll v; is >> v; a = mod_int(v); return is; }
 };
-using mint = mod_int<CONST_VALUE>;
-//END_SNIPPET:mint
+// EDIT
+using mint = mod_int<EDIT_HERE>;
+
+
+// CHECK
+const int MX = 1e5+5;
+template<class T>
+class Combinatoric {
+    public: 
+    int N;  
+    vector<T> fact, inv;
+    Combinatoric(int _N) : N(_N) {
+        fact.resize(N + 1), inv.resize(N + 1);
+        init();
+    }
+
+    void init() {
+        fact[0] = 1;
+        for(int i = 1; i <= N; i++) {
+            fact[i] = fact[i - 1] * i;
+        }
+        inv[N] = fact[N].inv();
+        for(int i = N - 1; i >= 0; i--) {
+            inv[i] = inv[i + 1] * (i + 1);
+        }
+    }
+
+    T nCk(int a, int b) {
+        if(a < b) return 0;
+        return fact[a] * inv[b] * inv[a - b];
+    }
+ 
+    T nPk(int n, int k) {
+        if (k < 0 || k > n) return 0; 
+        return fact[n] * inv[n - k];
+    }
+ 
+}; 
+Combinatoric<mint> comb(MX-1);
+//END_SNIPPET:mint_and_combinatoric
 
 
 // FOR TESTING 
 void solve(){
-    ll a,b,c;
-    cin >> a >> b >> c;
-    mod_int<13> x(a);
-    mod_int<13> y(b);
-    cout << x*y << endl;
 };
 
 
@@ -95,7 +119,7 @@ int main(){
     cin.tie(0);
     cout.tie(0);
     int T =1;
-    cin >> T; 
+    // cin >> T; 
     while(T--){
         solve();
     }
