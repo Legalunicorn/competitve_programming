@@ -70,97 +70,95 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-long long GCD(long long x, long long y)
-{
-    if (y == 0) return x;
-    return GCD(y, x%y);
-}
 
-template<class T>
-struct SparseTable{
-public:
-    // Modify this part
-    // This Sparse table is for IDEMPOTENT relations only O(1)
-    // For non-idempotent just use a segment tree for O(log n) performance
-    T combine(T a, T b){
-        return GCD(a,b); //
-    }
 
-    SparseTable(int size){
-        n = size;
-        logPow.resize(n+1,0);
-        for (int i=2;i<=n;i++) logPow[i] = logPow[i/2]+1;
-        while((1<<LOG)<+n) LOG++;
-        st.resize(n, vector<T>(LOG));
-    }
-
-    void build(vector<T>& arr){
-        for (int i=0; i<n; i++){
-            st[i][0] = arr[i];
-        }
-        for (int j=1; j<LOG; j++){
-            for (int i=0; i + (1<<j) - 1 < n; i++){
-                T a = st[i][j-1];
-                T b = st[i+(1<<(j-1))][j-1];
-                st[i][j] = combine(a,b);
-             }
-        }
-    }
-    
-    ll query(int l, int r){
-        int k = logPow[r-l+1];
-        T a = st[l][k];
-        T b = st[r-(1<<k)+1][k];
-        return combine(a,b);
-    }
-private:
-    vector<vector<T>> st;
-    int LOG = 20;
-    int n;
-    vector<int> logPow;
-};
-
-int X;
-int tc = 0;
-bool yes = false;
 void solve(){
-    tc++;
-    // cerr << T << " " << tc << endl;
     int n;
     cin >> n;
-    vl a(n);
-
-    int res = 0;
+    int n3 = 3*n;
+    vl a(n), b(n), c(n);
     for (auto& z:a) cin >> z;
-    bool found = false;
+    for (auto& z:b) cin >> z;
+    for (auto& z:c) cin >> z;
 
-    vl b(n-1);
-    for (int i=1;i<n;i++){
-        ll diff = abs(a[i] - a[i-1]);
-        b[i-1] = diff;
-        if (diff>1) found = true;
-    }
-    SparseTable<ll> st(n-1);
-    st.build(b);
+    vl cnt_b(n), cnt_c(n);
 
-    n -= 1; // new n
+    ll res = 0;
+    ll count1 = 0, count2 = 0;
     for (int i=0; i<n;i++){
-        int l = i, r = n-1;
-        int ans = 0;
-        while(l<=r){
-            int m = (l+r)/2;
-            if (st.query(i,m) != 1){
-                ans = m - i +1;
-                l = m + 1;
-            } else r = m -1;
+        int bs = 0;
+        int cs = i;
+        bool valid = true;
+        for (int j = 0; j < n; j++){
+            if (b[bs] >= c[cs]){
+                valid = false;
+                break;
+            }
+            bs = (bs+1) % n;
+            cs = (cs+1) % n;
         }
-        res = max(res,ans);
+        if (valid) count1++; // b to c count 
     }
-    res++;
-    if (found) res = max(res,2);
-    cout << res << endl;
+    // cerr << counjt1 << endl;
+    if (count1==0){
+        cout << 0 << endl;
+        return;
+    }
+
+    for (int i=0;i<n;i++){
+        int as = 0;
+        int bs = i;
+        bool valid = true;
+        for (int j=0; j<n;j++){
+            if (a[as] >= b[bs]){
+                valid = false;
+                break;
+            } 
+            as = (as+1) % n;
+            bs = (bs+1) % n;
+        }
+        if (valid) {
+            count2++;
+            // res += count1;
+            
+        }
+    }
+    cout << n * count1 * count2 << endl;
+    // cout << res << endl;
+
+
+    // find B to C 
+    // the number is the same shared for all B 
+    // so when we find A -> B 
 
 };
+
+/*
+    a[0] -> b[?]
+    b[0] -> c[?]
+
+    both should be n^2 operations 
+    then 
+
+    brute force b -> c 
+    shoul be n ^ 2 
+
+    then a -> b
+
+    we cant just extend 2n to simulte cycli but not needed 
+ 
+   count the number of suitable parameters 
+   for each i, how many j is valid 
+   among those valid j how many k 
+
+   sounds like we can dp this? 
+
+   a[i] <= 15000
+
+   for each parameter ALL "n" snowmen must be good 
+
+
+*/
 
 int main(){
 
@@ -170,8 +168,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T;
-    X = T;
+    cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();

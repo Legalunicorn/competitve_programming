@@ -43,7 +43,7 @@ using vvb = vector<vb>;
 
 constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9;
-constexpr ll MOD = 1e9+7;
+constexpr ll MOD = 998244353;
 constexpr double PI = 3.14159265358979323846;
 
 
@@ -70,108 +70,127 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-long long GCD(long long x, long long y)
-{
-    if (y == 0) return x;
-    return GCD(y, x%y);
+/*
+ * if we sum the number of balls 
+ * it should tell me who it ends on ? 
+ *
+*/
+
+ll fac[60];
+ll binpowmod(ll a, ll b, ll m){
+    a %= m;
+    ll res = 1;
+    while(b > 0){
+        if (b & 1) res = res * a % m;
+        a = a  * a % m;
+        b >>=1;
+    }
+    return res;
 }
 
-template<class T>
-struct SparseTable{
-public:
-    // Modify this part
-    // This Sparse table is for IDEMPOTENT relations only O(1)
-    // For non-idempotent just use a segment tree for O(log n) performance
-    T combine(T a, T b){
-        return GCD(a,b); //
-    }
+ll inverse(ll num){
+    return binpowmod(num,MOD-2,MOD);
+}
 
-    SparseTable(int size){
-        n = size;
-        logPow.resize(n+1,0);
-        for (int i=2;i<=n;i++) logPow[i] = logPow[i/2]+1;
-        while((1<<LOG)<+n) LOG++;
-        st.resize(n, vector<T>(LOG));
-    }
+ll ncr_mine(int n, int k){
+    return fac[n] * inverse(fac[k]*fac[n-k] % MOD) % MOD;
+}
 
-    void build(vector<T>& arr){
-        for (int i=0; i<n; i++){
-            st[i][0] = arr[i];
-        }
-        for (int j=1; j<LOG; j++){
-            for (int i=0; i + (1<<j) - 1 < n; i++){
-                T a = st[i][j-1];
-                T b = st[i+(1<<(j-1))][j-1];
-                st[i][j] = combine(a,b);
-             }
-        }
-    }
-    
-    ll query(int l, int r){
-        int k = logPow[r-l+1];
-        T a = st[l][k];
-        T b = st[r-(1<<k)+1][k];
-        return combine(a,b);
-    }
-private:
-    vector<vector<T>> st;
-    int LOG = 20;
-    int n;
-    vector<int> logPow;
-};
 
-int X;
+
+void start(){
+    fac[0] = 1;
+    fac[1] = 1;
+    fac[2] = 2;
+    for (int x = 3; x <= 55; x++){
+        fac[x] = (fac[x-1] * x % MOD);
+    }
+}
+
 int tc = 0;
-bool yes = false;
+
 void solve(){
-    tc++;
-    // cerr << T << " " << tc << endl;
     int n;
     cin >> n;
-    vl a(n);
-
-    int res = 0;
+    vl a(n+1);
     for (auto& z:a) cin >> z;
-    bool found = false;
 
-    vl b(n-1);
-    for (int i=1;i<n;i++){
-        ll diff = abs(a[i] - a[i-1]);
-        b[i-1] = diff;
-        if (diff>1) found = true;
-    }
-    SparseTable<ll> st(n-1);
-    st.build(b);
+    ll sum =0;
+    for (auto& x:a) sum += x;
+    ll mod = sum % n; // mod is how many "sticks out"
+    ll rounds = sum/n;  // no one can exceed round+1 
 
-    n -= 1; // new n
-    for (int i=0; i<n;i++){
-        int l = i, r = n-1;
-        int ans = 0;
-        while(l<=r){
-            int m = (l+r)/2;
-            if (st.query(i,m) != 1){
-                ans = m - i +1;
-                l = m + 1;
-            } else r = m -1;
+    for (int i =1; i<n+1;i++){
+        int x = a[i];
+        if (mod==0){
+            if (x > rounds){
+                cout << 0 << endl;
+                return;
+            }
+        } else {
+            if (x > rounds+1){
+                cout << 0 << endl;
+                return;
+            }
         }
-        res = max(res,ans);
     }
-    res++;
-    if (found) res = max(res,2);
-    cout << res << endl;
+    // all permuatateoin 
+    if (mod==0){
+        cout << fac[n] << endl;
+        return;
+    }
 
+    ll cnt = 0;
+    ll lim = mod;
+    for (int i=1;i<n+1;i++){
+        if (a[i] == rounds+1){
+            cnt++;
+            if (cnt > lim){
+                cout << 0 << endl;
+                return;
+            }
+        }
+    }
+
+    // ll base = (ll)(lim - cnt);
+    if (cnt == lim){ // we just have the permutate those within 
+        // cerr << "ok!" << endl;
+        // debugv(a);
+        ll val = (fac[cnt] * fac[(n-cnt)]) % MOD;
+        cout << val << endl;
+        return;
+    }
+    if (cnt==0){
+        ll val = fac[n];
+        cout << val << endl;
+        return;
+    }
+    ll base = (ll)(lim - cnt);
+    ll val = fac[n-cnt] * fac[lim] * inverse(fac[lim-cnt]) % MOD;
+    cout << val << endl;
+    
 };
 
-int main(){
+/*
+ 
+   there can be empty number of decorations 
 
+   we must use all the decorations 
+
+*/
+
+
+
+int main(){
+    // ll INV = binpowmod(ll a, ll b, ll m)
+    start();
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    cin >> T;
-    X = T;
+    cin >> T; 
     auto start1 = high_resolution_clock::now();
     while(T--){
         solve();
