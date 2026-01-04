@@ -18,8 +18,23 @@ Description:
 //SNIPPET_ID:demo123
 struct demo12312312312321321321{
     int x;
-    int y;
+	int y;
+	cout << endl << endl;
+	if (n == 2){
+		for (int i=0;i<n;i++){
+			cout << i << endl;
+			if ( i = =2){
+				cout << endl;
+		}
+	}
+	cout << endl;
+
 };
+
+public static void main(){
+	
+}
+
 
 //END_SNIPPET:demo123
 
