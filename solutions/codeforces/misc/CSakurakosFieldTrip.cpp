@@ -33,50 +33,72 @@ void solve(){
     cin >> n;
     vi a(n);
     for (auto& z:a) cin >> z;
-    int m = n/2;
-    for (int i=n/2-1;i>=0;i--){
-        int j = n - i -1; 
-        // debug(i,j);
+    for (int i = n/2 - 1; i>=0;i--){
+        int j = n - i - 1;
         if (a[i] == a[j]) continue;
-        // check if total decresed? 
-        int stay = 0, change = 0;
-        if (i==0){
-            if (a[i] == a[i+1]) stay++;
-            if (a[j] == a[j-1]) stay++;
-            swap(a[i],a[j]);
-            if (a[j]== a[j-1]) change++;
-            if (a[i] == a[i+1]) change++;
-            if (change >= stay) swap(a[i],a[j]);
-        } else{
-            if (a[i]==a[i+1]) stay++;
-            if (a[i]==a[i-1]) stay++;
-            if (a[j]==a[j+1]) stay++;
-            if (a[j]==a[j-1]) stay++;
-            swap(a[i],a[j]);
-            if (a[i]==a[i+1]) change++;
-            if (a[i]==a[i-1]) change++;
-            if (a[j]==a[j+1]) change++;
-            if (a[j]==a[j-1]) change++;
-            if (change >= stay) swap(a[i],a[j]);
-
-
-        }
+        if (a[i]== a[i+1] || a[j]==a[j-1])  swap(a[i],a[j]);
     }
-    // debug(a);
-    int res = 0;
-    int len = 0;
-    int curr = -1;
-    for (int i=0;i<n;i++){
-        if (a[i] == curr){
-            len ++;
-        } else{
-            if (len >=2) res++;
-            len = 1;
-        }
-        curr = a[i];
+    int res =0; 
+    for( int i=0;i<n-1;i++){
+        if (a[i]==a[i+1]) res++;
     }
-    if (len>=2) res++;
+    debug(a);
     cout << res << endl;
+
+    // wtf is this ? 
+    //
+
+
+
+    // int m = n/2;
+    // for (int i=n/2-1;i>=0;i--){
+    // // for (int i= 0; i<n/2;i++){
+    //     int j = n - i -1; 
+    //     // debug(i,j);
+    //     if (a[i] == a[j]) continue;
+    //     // check if total decresed? 
+    //     int stay = 0, change = 0;
+    //     if (i==0){
+    //         if (a[i] == a[i+1]) stay++;
+    //         if (a[j] == a[j-1]) stay++;
+    //         swap(a[i],a[j]);
+    //         if (a[j]== a[j-1]) change++;
+    //         if (a[i] == a[i+1]) change++;
+    //         if (change > stay) swap(a[i],a[j]);
+    //     } else{
+    //         if (a[i]==a[i+1]) stay++;
+    //         if (a[i]==a[i-1]) stay++;
+    //         if (a[j]==a[j+1]) stay++;
+    //         if (a[j]==a[j-1]) stay++;
+    //         swap(a[i],a[j]);
+    //         if (a[i]==a[i+1]) change++;
+    //         if (a[i]==a[i-1]) change++;
+    //         if (a[j]==a[j+1]) change++;
+    //         if (a[j]==a[j-1]) change++;
+    //         if (change > stay) swap(a[i],a[j]);
+    //
+    //
+    //     }
+    // }
+    // debug(a);
+    // int res = 0;
+    // for (int i=0;i<n-1;i++){
+    //     if (a[i]==a[i+1]) res++;
+    // }
+    // cout << res << endl;
+    // int len = 0;
+    // int curr = -1;
+    // for (int i=0;i<n;i++){
+    //     if (a[i] == curr){
+    //         len ++;
+    //     } else{
+    //         if (len >=2) res++;
+    //         len = 1;
+    //     }
+    //     curr = a[i];
+    // }
+    // if (len>=2) res++;
+    // cout << res << endl;
 
 };
 

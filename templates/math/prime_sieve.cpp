@@ -2,7 +2,7 @@
 using namespace std;
 using ll = long long;
 /*
-Created: 2025-11-30 17:13:42
+Created: 2026-01-07 21:26:40
 File: prime_sieve
 Author: github@legalunicorn
 Test status: 
@@ -15,46 +15,37 @@ Description:
 */
 
 
-
-vector<bool> gen_sieve(int N){
-    vector<bool> prime(N+1, true);    
-    prime[0] =  prime[1] = false;
-    for (int i = 2; i*i <= N ;i++){
-        if (prime[i] && (ll)i*i <= N){
-            for (int j=i*i; j<= N; j+=i){
-                prime[j] = false;
+//SNIPPET_ID:prime_sieve
+int MAXN = (int)(3e5+5);
+vector<bool> is_prime(MAXN, true);
+vector<int> primes;
+void init_sieve(){
+    is_prime[0] = is_prime[1] = false;
+    for (int i = 2; i<= MAXN ; i++){
+        if (is_prime[i] && (ll)i * i  <= MAXN){
+            for (int j = i *i ; j <= MAXN; j += i){
+                is_prime[j] = false;
             }
         }
     }
-    return prime;
+    // for (int i=2; i<=MAXN;i++) {
+    //     if (is_prime[i]) primes.push_back(i);
+    // }
 };
 
-// use sieve to generate primes up to n 
-vector<int> gen_primes(int n){
-    vector<bool> primes = gen_sieve(n);
-    vector<int> res;
-    for (int i=2;i<=n;i++){
-        if (primes[i]) res.push_back(i);
+vector<int> trial_div(int n){
+    vector<int> fac;
+    for (auto& d: primes){
+        if (d* d > n) break;
+        while(n% d == 0){
+            fac.push_back(d);
+            n /= d;
+        }
     }
-    return res;
-};
-
-vector<int> prime_factors(int n){
-    int m = (int)ceil(sqrt(n+.01));
-    vector<int> res;
-    vector<int> prime_list = gen_primes(m);
-    for (int p: prime_list){
-        if (p*p>n) break;
-        while(n%p == 0){
-            res.push_back(p);
-            n /=p;
-        }  
-    }
-    if (n>1){
-        res.push_back(n);
-    }
-    return res;
+    if (n>1) fac.push_back(n);
+    return fac;
 }
+//END_SNIPPET:prime_sieve
 
 
 // FOR TESTING 
@@ -73,3 +64,6 @@ int main(){
     }
     return 0;
 }
+
+
+

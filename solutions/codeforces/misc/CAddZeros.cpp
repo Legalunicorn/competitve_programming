@@ -70,19 +70,59 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-// this is a DAG and math problem 
-// sounds hella boring though 
-// Im too lazy to do a topo sort either 
-// even after you topo sort, 
-// you have to find the path with the max sum 
-// HELL nah 
-// im going to do atcoder
-// this shit is not worth 1500 problem 
-// should be 1600 - 1700 
+
+// i seen this question before but SKIPPEd 
+// because its kinda nonsense 
+// ai = |a| + 1 - i 
+// |a| = ai - 1 + i (1 indexed)
+// |a| = ai + i  (0 indeed)
+// gain i - 1, we can claulated the final results 
+//
+// these forms our "EdgeS"
+// our graph only starts from original a[i],
+// we just need to find the max node it can reach 
+//
+// |a| = ai + i + i 
+//
+// |a| will probably be capped to like 5*n or something 
+//
+// |a| only increases 
+// we can map a[i] to its intended |A| 
+// then w
+//
+// |a| = ai - 1 + i 
+// = ai + i 
+//
+//
+// |a| = |a|
+
+
+
+
 void solve(){
-    int n; cin >> n;
+    ll n; cin >> n;
     vl a(n);
     for (auto& z:a) cin >> z;
+    map<ll,vl> g;
+    for (ll i=0;i<n;i++){
+        ll u = a[i] + i;
+        ll v = a[i] + i + i;
+        g[u].pb(v);
+    } 
+    
+    ll mx = n;
+    set<ll> seen;
+    auto dfs = [&](auto& dfs, ll u) -> void{
+        seen.insert(u);
+        mx = max(mx,u);
+        for (ll v:g[u]){
+            if (seen.count(v)) continue;
+            dfs(dfs,v);
+        }
+    };
+    dfs(dfs,n);
+    cout << mx << endl;
+
 
 };
 
