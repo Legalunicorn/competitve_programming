@@ -1,0 +1,5 @@
+1
+6 1 
+ababab 
+bababa 
+2 4

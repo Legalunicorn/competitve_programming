@@ -21,12 +21,10 @@ using vb = vector<bool>; using vvb = vector<vb>;
 #define MIN(a) *min_element(all(a));
 #define MAX(a) *max_element(all(a));
 
-//variables and functoins
 const vvi dirs = {{-1,0},{1,0},{0,-1},{0,1}};
 constexpr ll INF = 4e18; 
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
-constexpr double PI = 2.14159265358979323846;
 
 void solve(){
 

@@ -29,7 +29,41 @@ constexpr ll MOD = 1e9+7;
 constexpr double PI = 2.14159265358979323846;
 
 void solve(){
-    
+    ll n,m;
+    cin >> n >> m;
+    ll t = n;
+    ll k = 1;
+    // count 2 and 5;
+    int two = 0, five = 0;
+    while(n > 0 && n % 2 == 0){
+        two++;
+        n/=2;
+    }
+    debug(n);
+    while(n > 0 && n % 5 == 0){
+        five++;
+        n/=5;
+    }
+    while(two < five && k * 2 <= m){
+        k *= 2;
+        two++;
+    }
+    while(five < two && k * 5 <= m ){
+        k *= 5;
+        five++;
+    }
+    debug("?",two,five,k);
+
+    if (five == two){
+        while(k*10 <= m){
+            k *= 10;
+        }
+    } 
+    ll x  = m / k ;
+    k *= x;
+    ll res = k * t;
+    if (res%10!=0) res = t * m;
+    cout << res << endl;
 };
 
 int main(){
@@ -39,7 +73,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--){
         solve();
     }

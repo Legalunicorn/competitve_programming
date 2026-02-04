@@ -29,7 +29,7 @@ constexpr ll MOD = 1e9+7;
 constexpr double PI = 2.14159265358979323846;
 
 void solve(){
-
+    
 };
 
 int main(){

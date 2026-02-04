@@ -28,15 +28,90 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 constexpr double PI = 2.14159265358979323846;
 
+// i Dont have proof but i think
+// fall all in one direction might work 
+//
+// I read the first line of the editoral
+// it says "dynamic programming" ook greedy is also accepted
+// would never have guessed that shit in a million years 
+//
+// 1. status: LEFT, STAY, RIGHT 
+// 2. differnces: which tree to which tree? 
+//
+
 void solve(){
     int n;
     cin >> n;
-    vpi a(n);
+    vl a(n), b(n);
     for (int i=0;i<n;i++){
-        int x,h;
-        cin >> x >> h;
-        a[i] = {x,h};
+        ll x,h; cin >> x >> h;
+        a[i] = x;
+        b[i] = h;
     }
+    int res = 0;
+    // if cant go left, check right and its always optimal to go right if possible
+    // why? suppose we dont go right, then its for the next guy to go left? 
+    // but both are worht the same, and go right will always be better 
+    ll mx = -INF;
+    for (int i=0;i+1<n;i++){
+        // check left
+        if (a[i]-b[i] > mx) {
+            res++;
+            mx = a[i];
+        } else if (a[i]+b[i] < a[i+1]){
+            res ++;
+            mx = a[i] + b[i];
+        } else mx = a[i];
+    }
+    res++;
+    cout << res << endl;
+
+
+    // int res = 0;
+    // int ans = 1;
+    // vb fell(n,false);
+    // fell[0] = true;
+    // for (int i =1;i<n;i++){
+    //     if (a[i]-b[i] > a[i-1]){
+    //         fell[i] = true;
+    //         ans++;
+    //     }
+    // }
+    // ll far = INF;
+    // for (int i = n -1; i>=0;i--){
+    //     if (fell[i]) {
+    //         far = min(far, a[i] - b[i]);
+    //     } else{
+    //         if (a[i]+b[i] < far){
+    //             fell[i] = true;
+    //             ans++;
+    //         }
+    //         far = a[i];
+    //     }
+    // }
+    // res = max(res,ans);
+    // ans = 1;
+    // fell.assign(n,false);
+    // fell[n-1] = true;
+    // for (int i = n -2; i>=0;i--){
+    //     if (a[i] + b[i] < a[i+1]){
+    //         fell[i] = true;
+    //         ans++;
+    //     }
+    // }
+    // far = -INF;
+    // for(int i =0;i<n;i++){
+    //     if (fell[i]){
+    //         far = max(far, a[i]+b[i]);
+    //     } else{
+    //         if (a[i] - b[i] > far) {
+    //             ans++;
+    //         }
+    //         far = a[i];
+    //     }
+    // }
+    // res = max(res,ans);
+    // cout << res << endl;
 
 };
 
