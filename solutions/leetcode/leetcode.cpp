@@ -13,7 +13,6 @@ using vb = vector<bool>; using vvb = vector<vb>;
 #define debug(...)
 #endif
 
-// #define endl '\n' 
 #define F first 
 #define S second 
 #define all(x) begin(x), end(x)
@@ -31,46 +30,57 @@ const int inv= 1e9;
 
 class Solution {
 public:
-    int longestSubsequence(vector<int>& nums) {
-        int res = 0;
-        // construct LIS in another way 
-        // the idea is that we binary search for the number 
-        // if it is the greatest we add it to the list 
-        // otherwise we replace the leme
-        for (int b = 0; b < 31; b++ ){
-            vi lis;
-            for (auto& x: nums){
-                if (x >> b & 1){
-                    auto it  = lower_bound(all(lis), x);
-                    if (it == lis.end()) lis.pb(x);
-                    else *it = x;
-                }
-            }
-            res = max(res,(int)lis.size());
+    string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        int n = s.size();
+        vvi g(n);
+
+        for (auto& p: pairs){
+            int u = p[0], v = p[1];
+            g[u].pb(v);
+            g[v].pb(u);
+            //dsu.union_set(p[0], p[1]);
         }
+        string t = s;
 
+  
 
-        return res;
+        vi comp;
+        vb seen(n, false);
+        auto dfs = [&](auto dfs, int u) -> void{
+            seen[u] = true;
+            comp.pb(u);
+            for (auto& v: g[u]){
+                if (seen[v]) continue;
+                dfs(dfs,v);
+            }
+        };
+
+        for (int i = 0; i < n; i++){
+            if (seen[i]) continue;
+            dfs(dfs,i);
+            vi ids = comp;
+            sort(all(ids));
+            sort(all(comp),[&](const auto&p, const auto&q){
+                    return s[p] < s[q];
+            });
+            for (int i = 0; i  <comp.size(); i++){
+                t[ids[i]] = s[comp[i]];
+            }
+            comp.clear();
+            ids.clear();
+        }
+        return t;
     }
 };
 
-
 void solve(){
-    Solution sol;
-    int n;
-    cin >> n;
-    vi a(n);
-    for(auto& z:a)cin >> z;
-    cout << sol.longestSubsequence(a) << endl;
 }
-
-
 
 
 #ifdef LOCAL
 int main(){
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--) solve();
     cerr << " == END ==" << endl;
     return 0;

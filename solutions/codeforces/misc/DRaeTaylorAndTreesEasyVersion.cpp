@@ -27,7 +27,28 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    // i remember being stuck on this
+    int n;
+    cin >> n;
+    vi a(n);
+    for (auto& z:a) cin >> z;
+    int v  =a[n-1];
+    vi mx(n);
+    for (int i = n -1; i >=0; i--){
+        v = max(v, a[i]);
+        mx[i] = v;
+    }
+    int mn = a[0];
+    for (int i = 0; i + 1 < n; i ++){
+        mn = min(mn,a[i]);
+        if (mn > mx[i+1]){
+            cout << "No" << endl;
+            return;
+        }
+    }
+    cout << "Yes" << endl;
+
+    // p[0] must be the root 
+    // 
 };
 
 int main(){
