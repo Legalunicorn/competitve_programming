@@ -40,6 +40,10 @@ constexpr ll MOD = 1e9+7;
 //  The answer was just a simple observation 
 //  -> if we fix the unchosen child, everyone 
 //  after must be "minus" i didnt see this clearly
+//
+//
+//  NOTE: i think this problem can be solved with DP as well
+//  i Should verfiy it
 
 void solve(){
     int n;

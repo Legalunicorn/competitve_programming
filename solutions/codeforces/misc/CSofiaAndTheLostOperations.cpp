@@ -27,35 +27,48 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int n;
+    int n; 
     cin >> n;
-    vi a(n); // start
-    for(auto& z:a) cin >> z;
-    vi b(n); // found
-    for (auto& z:a) cin >> z; 
-    // a -> b 
-    int m; cin >> m;
-    vi op(m);
-    for (auto& z:op) cin >> z;
+    vi a(n), b(n);
+    for (auto& z:a) cin >> z;
+    for (auto& z:b) cin >> z;
+    int m;
+    cin >> m;
+    vi c(m);
+    for (auto& z:c) cin >> z;
+    set<int> st;
     map<int,int> mp;
-    set<int> st(all(b));
-    for (int i = 0; i < m ; i++){
+    // there is NO order here
+    for (int i = 0; i < n; i++){
         if (a[i] != b[i]) mp[b[i]]++;
+        else st.insert(a[i]); // extra
     }
-    for (auto& d: op){
-        if (mp[d]>0){
-            mp[d]--;
-            if (mp[d]==0) mp.erase(d);
-        } else{
-            // if this number already exiss,
+    
+    debug(st);
+    debug(mp);
+    cerr << endl;
+    // c[m] -> new values NO ORDER 
+    for (int i = 0; i < m ;i ++){
+        int x = c[i];
+        if (mp[x] > 0){
+            mp[x]--;
+            if (mp[x] == 0) st.insert(x);
+        } else {
+            if (st.count(x) || i != m-1) continue;
+            else {
+                cout << "NO" << endl;
+                return;
+            }
         }
     }
-    // we are give nthe values 
-    // so we just need to map a to b, where b has some value 
-    // if a[i] = b[i] we ignore 
-    // otherwise we need some random transition from {x,d}
-    // or {d} and with access we just need to check if its exists
-    // what if we are forced to change something?.. who do we change 
+    for (auto& [v,c]: mp){
+        if (c >0){
+            cout << "NO" << endl;
+            return;
+        }
+    }
+    cout << "YES" << endl;
+    return;
 };
 
 int main(){

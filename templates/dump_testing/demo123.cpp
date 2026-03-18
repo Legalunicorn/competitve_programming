@@ -15,7 +15,7 @@ Description:
 */
 
 
-//SNIPPET_ID:demo123
+//SNIPPET_ID: demo123
 struct demo12312312312321321321{
     int x;
 	int y;
