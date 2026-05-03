@@ -26,35 +26,47 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+
+// the direcitons must be divisible? 
+// what about the net, if the net is divisible is it fine ? 
+//
+// net x = 3 
+// up up up down, : u , {u , u ,d}
+//
+//
+
+
+
 void solve(){
     int n;
     cin >> n;
     string s;
     cin >> s;
+    int dx = 0;
+    int dy = 0;
     int x = 0, y = 0;
-    int xc = 0, yc = 0;
     for (char c: s){
-        if (c=='N') {
+        if (c == 'N') {
             y++;
-            yc++;
-        } else if (c=='S'){
-            y--;
-            yc++;
-        } else if (c=='E'){
-            x++, xc++;
+            dy++;
+        } else if (c=='S'){ 
+            y++;
+            dy--;
+        } else if (c=='E') {
+            x++;
+            dx++;
+
         } else {
-            x--, xc--;
+            x++;
+            dx--;
         }
     }
-    if (x%2==1 || y%2==1){
-        cout << "NO" << endl;
-        return;
-    }
-    if (x == 0 && xc == 2 || y==0 && yc==2){
+    if (dx % 2 ==1 || dy % 2 ==1){
         cout << "NO" << endl;
         return;
     }
 
+    // at least one 
 };
 
 int main(){

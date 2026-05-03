@@ -63,83 +63,89 @@ string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), 
 string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
 bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
 
-
+// MIND SOlVED but i dont have time to implemenets 
+// NOTE:
+// 1. BFS (1) multi source bfs from all monsters 
+// 2. BFS (2) multi source bfs from all exits 
+// 2. DFS (3) search all cells with BFS(2) < BFS (1) and update parents 
+//      -> if any exit has a parent we just print the path out 
+//      -> otherwise print NO 
 
 
 void solve(){
-    int n,m;
-    cin >> n >> m;
-    // vector<vector<char>> grid (n,vector<char>(m));
-    vector<string> g (n);
-    pi end, start;
-    for (int i=0;i<n;i++){
-        string s; cin >> s;
-        g[i] = s;
-        for (int j=0;j<m;j++){
-            if (s[j]=='A'){
-                start.F = i;
-                start.S = j;
-            }
-        }
-        if (s[0]=='.'){
-            end.F = i;
-            end.S = 0;
-        } else if (s[m-1]=='.'){
-            end.F = i;
-            end.S = m-1;
-        }
-    }
-
-    //Dijsktra is completely unnecessary 
-    //Bfs will do 
-    vvi dist(n,vi(m,INT_MAX));
-    vvi par(n,vi(m,-1));
-    auto cmp = [&](const auto& a, const auto& b){
-        return a[0] < b[0];
-    };
-    priority_queue<vi,vvi,decltype(cmp)> pq(cmp);
-    dist[end.F][end.S] = 0;
-    pq.push({0,end.F,end.S});
-
-    // cerr << "pretest " << endl;
-
-    while(!pq.empty()){
-        vi t = pq.top();
-        pq.pop();
-        int w = t[0], x = t[1], y = t[2];
-        for (int i=0;i<4;i++){
-            int r = x+dirs[i][0];
-            int c = y+dirs[i][1];
-            if (r>=0 && r<n && c>=0 && c<m && g[r][c]!='#'){
-                if (w+1>dist[r][c]){
-                    dist[r][c] = w+1;
-                    par[r][c] = i;
-                    pq.push({w+1,r,c});
-                }
-            }
-        }
-    }
-    int alice = dist[start.F][start.S];
-    for (int i=0;i<n;i++){
-        for (int j=0;j<m;j++){
-            if (g[i][j]=='M' && dist[i][j]<=alice){
-                cout << "NO" << endl;
-                return;
-            }
-        }
-    }
-    cout << "YES" << endl;
-    cout << alice << endl;
-
-    int x = end.F, y = end.S;
-    while(par[x][y]!=-1){
-        int dir = par[x][y];
-        vi d = dirs_inv[dir];
-        cout << dirs_char[dir] << " ";
-        x += d[0];
-        y += d[1];
-    }
-    cout << endl;
+    // int n,m;
+    // cin >> n >> m;
+    // // vector<vector<char>> grid (n,vector<char>(m));
+    // vector<string> g (n);
+    // pi end, start;
+    // for (int i=0;i<n;i++){
+    //     string s; cin >> s;
+    //     g[i] = s;
+    //     for (int j=0;j<m;j++){
+    //         if (s[j]=='A'){
+    //             start.F = i;
+    //             start.S = j;
+    //         }
+    //     }
+    //     if (s[0]=='.'){
+    //         end.F = i;
+    //         end.S = 0;
+    //     } else if (s[m-1]=='.'){
+    //         end.F = i;
+    //         end.S = m-1;
+    //     }
+    // }
+    //
+    // //Dijsktra is completely unnecessary 
+    // //Bfs will do 
+    // vvi dist(n,vi(m,INT_MAX));
+    // vvi par(n,vi(m,-1));
+    // auto cmp = [&](const auto& a, const auto& b){
+    //     return a[0] < b[0];
+    // };
+    // priority_queue<vi,vvi,decltype(cmp)> pq(cmp);
+    // dist[end.F][end.S] = 0;
+    // pq.push({0,end.F,end.S});
+    //
+    // // cerr << "pretest " << endl;
+    //
+    // while(!pq.empty()){
+    //     vi t = pq.top();
+    //     pq.pop();
+    //     int w = t[0], x = t[1], y = t[2];
+    //     for (int i=0;i<4;i++){
+    //         int r = x+dirs[i][0];
+    //         int c = y+dirs[i][1];
+    //         if (r>=0 && r<n && c>=0 && c<m && g[r][c]!='#'){
+    //             if (w+1>dist[r][c]){
+    //                 dist[r][c] = w+1;
+    //                 par[r][c] = i;
+    //                 pq.push({w+1,r,c});
+    //             }
+    //         }
+    //     }
+    // }
+    // int alice = dist[start.F][start.S];
+    // for (int i=0;i<n;i++){
+    //     for (int j=0;j<m;j++){
+    //         if (g[i][j]=='M' && dist[i][j]<=alice){
+    //             cout << "NO" << endl;
+    //             return;
+    //         }
+    //     }
+    // }
+    // cout << "YES" << endl;
+    // cout << alice << endl;
+    //
+    // int x = end.F, y = end.S;
+    // while(par[x][y]!=-1){
+    //     int dir = par[x][y];
+    //     vi d = dirs_inv[dir];
+    //     cout << dirs_char[dir] << " ";
+    //     x += d[0];
+    //     y += d[1];
+    // }
+    // cout << endl;
 
 
 };

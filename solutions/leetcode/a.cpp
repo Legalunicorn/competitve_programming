@@ -28,18 +28,10 @@ constexpr ll MOD = 1e9+7;
 constexpr double PI = 2.14159265358979323846;
 const int inv= 1e9;
 
+// NOTE: product of digits divisible by sum? 
+// product 10 ** 9 = 10e9 
+// we need to do some mod 
 
-class Solution {
-public:
-    int countCommas(int n) {
-        int res = 0;
-        for (int i = 1; i <= n; i++) {
-            int l = to_string(i).size();
-            res += ((l-1)/3);
-        }
-        return res;
-    }
-};
 
 void solve(){
     

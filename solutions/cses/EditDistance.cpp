@@ -34,13 +34,32 @@ constexpr ll MOD = 1e9+7;
 //
 
 void solve(){
-    // meet in the middle? 
-    // convert n -> m ? or m -> n ? does length matter 
-    // if the sart differsn and length is not the same 
-    // then we can just delete from the longer one / add from the shorter 
-    // in which we ignore the longer one, shorter one stay the same 
-    // dp[m] for which we do n interations on 
-    //
+    // dp[i][j] 
+    // obvious if one is zero we can return the other 
+    // ADD 
+    // REMOVE 
+    // REPLACE
+    // we can also do a free cost "replace" when they patch 
+    // remove is just ignore the current "i" or "j"
+    // add is the inverse or remove 
+    string s,t;
+    cin >> s >> t;
+    int n = s.size(), m = t.size();
+    vvi dp(n+1, vi(m+1, n + m + 1));
+    for (int i = 0; i <= n; i++){
+        for (int j = 0; j <= m; j++){
+            if (i == 0) dp[i][j] = j;
+            else if (j == 0) dp[i][j] = i;
+            else {
+                int wild = (s[i-1] == t[j-1] ? 0: 1);
+                dp[i][j] = min(dp[i][j], 1+ dp[i-1][j]);
+                dp[i][j] = min(dp[i][j], 1+ dp[i][j-1]);
+                dp[i][j] = min(dp[i][j], dp[i-1][j-1] + wild);
+            }
+        }
+        debug(i, dp[i]);
+    }
+    cout << dp[n][m] << endl;
 };
 
 int main(){

@@ -29,7 +29,32 @@ constexpr ll MOD = 1e9+7;
 constexpr double PI = 2.14159265358979323846;
 
 void solve(){
+    int n,m;
+    cin >> n >>  m;
+    debug(n, m);
+    vvi dp(n+1, vi(m+1, n * m + 1));
+    for (int i = 1; i <= n; i++) dp[i][1] = i - 1;
+    for (int i = 1; i <= m; i++) dp[1][i] = i - 1;
+    for (int i = 1; i <= min(m, n); i++) dp[i][i] = 0;
 
+    debug(dp);
+    // NOTE:
+    // the order we go ensures that both (i,j) we call, i <= I, j <= J
+    // so it suffice for us to process in the normal order
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            int ans = dp[i][j];
+            for (int r = 1; r < i; r++){
+                ans = min(ans, 1 + dp[r][j] + dp[i - r][j]);
+            }
+            for (int c = 1; c < j; c++){
+                ans = min(ans, 1 + dp[i][c] + dp[i][j - c]);
+            }
+            dp[i][j] = min(dp[i][j], ans);
+        }
+    }
+    cout << dp[n][m] << endl;
 };
 
 int main(){
