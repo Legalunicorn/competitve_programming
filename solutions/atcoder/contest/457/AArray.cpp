@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long; using ull = unsigned long long;using ld = double; 
@@ -14,6 +13,7 @@ using vb = vector<bool>; using vvb = vector<vb>;
 #define debug(...)
 #endif
 
+#define endl '\n' 
 #define F first 
 #define S second 
 #define all(x) begin(x), end(x)
@@ -21,28 +21,32 @@ using vb = vector<bool>; using vvb = vector<vb>;
 #define MIN(a) *min_element(all(a));
 #define MAX(a) *max_element(all(a));
 
-//variables and functoins
 const vvi dirs = {{-1,0},{1,0},{0,-1},{0,1}};
 constexpr ll INF = 4e18; 
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
-constexpr double PI = 2.14159265358979323846;
-const int inv= 1e9;
-
-
-
 
 void solve(){
-    
-}
+    int n;
+    cin >> n;
+    vi a(n);
+    for (auto& z:a) cin >> z;
+    int x;
+    cin >> x;
+    cout << a[x-1] << endl;
+};
 
-
-#ifdef LOCAL
 int main(){
-    int t = 1;
-    // cin >> t;
-    while(t--) solve();
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    // freopen("file.in","r",stdin);
+    // freopen("file.out","w",stdout);
+    int T =1;
+    // cin >> T; 
+    while(T--){
+        solve();
+    }
     cerr << " == END ==" << endl;
     return 0;
 }
-#endif
