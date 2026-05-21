@@ -26,27 +26,26 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// i think we can find X and Y separately
+// isnt it just mdian?
+// numbr of x tims numper of y
 void solve(){
     int n;
     cin >> n;
-    vi a(n);
-    for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
-            }
-        }
+    vi a(n), b(n);
+    for (int i = 0; i < n;i++) cin >> a[i] >> b[i];
+    sort(all(a));
+    sort(all(b));
+    if (n % 2 == 1){
+        cout << 1 << endl;
+        return;
     }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
-    }
-    cout << res << endl;
+    int  m = n/2;
+    ll x = a[m] - a[m-1] + 1;
+    ll y = b[m] - b[m-1] + 1;
+    ll r  = x * y;
+    cout << r << endl;
+
 };
 
 int main(){
@@ -56,7 +55,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--){
         solve();
     }

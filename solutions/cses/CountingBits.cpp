@@ -26,27 +26,18 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+
+
+// we split it into how oftn each bit appears 
+// "1" -> for all odd numbers 
+// "-1" apears at { 2, 3 }
+// NOTE 
+// 1. for each bit -> we track the first time it appears 
+// then we know 
+// 1. how many times it appear then stop then appear then stop 
+// we divid (N - appear) / (size)
 void solve(){
-    int n;
-    cin >> n;
-    vi a(n);
-    for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
-            }
-        }
-    }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
-    }
-    cout << res << endl;
+
 };
 
 int main(){

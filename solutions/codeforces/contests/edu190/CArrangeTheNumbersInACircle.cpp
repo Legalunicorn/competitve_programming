@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <queue>
 using namespace std;
 using ll = long long; using ull = unsigned long long;using ld = double; 
 using vi = vector<int>; using vvi = vector<vi>;
@@ -26,27 +27,53 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+
+// NOTE: 
+// if they are all >= 2 or <= 0
+// we can use all of them fine 
+// the only issues is cards with "1" 
+// -> we can use them in slots with >= 4, then we replace 
+
+
 void solve(){
     int n;
     cin >> n;
-    vi a(n);
+    vl a(n);
     for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
-            }
+
+    if (n == 1){
+        if (a.back() <= 2) cout << 0 << endl;
+        else cout << a.back()<<endl;
+        return;
+    }
+
+    priority_queue<ll> pq;
+    ll res = 0;
+    int one = 0;
+    int take = 0;
+    for (int i = 0; i < n; i++){
+        if (a[i] == 1) one++;
+        else {
+            take++;
+            res += a[i];
+            if (a[i] >= 4) pq.push(a[i]);
         }
     }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
+
+    if (take == 1 && one > 0){
+        res++;
+        one--;
+    }
+
+    for (int i = 0; i < one; i++){
+        if (pq.empty()) break;
+        ll t =  pq.top();
+        pq.pop();
+        res++;
+        if (t-2 >= 4) pq.push(t-2);
     }
     cout << res << endl;
+
 };
 
 int main(){
@@ -56,7 +83,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--){
         solve();
     }

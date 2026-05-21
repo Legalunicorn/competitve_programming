@@ -26,27 +26,25 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// spam B ,, then take A/B 
+// spam A 
 void solve(){
-    int n;
-    cin >> n;
-    vi a(n);
-    for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
-            }
-        }
+    ll n,a,b;
+    cin >> n >> a >> b;
+    if (a * 3 <= b){
+        ll res = a * n ;
+        cout << res << endl;
+        return;
     }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
-    }
+    // use b while u can 
+    ll res = 0;
+    ll q = n / 3;
+    res += q*b;
+    ll rem = n % 3;
+    ll evl = min(rem*a, b);
+    res += evl;
     cout << res << endl;
+
 };
 
 int main(){
@@ -56,7 +54,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--){
         solve();
     }

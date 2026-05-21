@@ -26,26 +26,49 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// guaranteed its possible 
+// and all numbers < m 
+// doesnt it mean there is some equivalnt class goung on ? 
+// we have a count of frequencyes 
+// for every element in a[i] we can try to make it b[0] 
+//
+
+// NOTE:
+// its not just counter of frequency its a sequence of frequencies 
+// the order here dont matter 
+// sort both 
+// then jus try a[i] to b[0] start, x is determined and check if its possible
+//
+
+
 void solve(){
-    int n;
-    cin >> n;
-    vi a(n);
+    int n, m;
+    cin >> n >> m;
+    vi a(n), b(n);
     for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
+    for (auto& z:b) cin >> z;
+    ll res = INF;
+    sort(all(a));
+    sort(all(b));
+    debug(a);
+    debug(b);
+    for (int i = 0; i < n; i ++){
+        // a[i] -> b[0];
+        ll x = 0;
+        if (a[i] > b[0]) x = (m - a[i]) + b[0];
+        else if (a[i] < b[0]) x = b[0] - a[i];
+        bool valid = true;
+        debug(i,x);
+        for (int j = 0; j < n; j++){
+            if (((a[(i+j)%n]+x) % m) != b[j]) {
+                debug(j,a[i+j], b[j]);
+                valid = false;
+                break;
             }
         }
+        if (valid) res = min(res, x);
     }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
-    }
+
     cout << res << endl;
 };
 

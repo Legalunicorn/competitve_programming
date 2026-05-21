@@ -27,26 +27,20 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int n;
-    cin >> n;
-    vi a(n);
-    for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
-            }
+    string s;
+    ll res = 0;
+    cin >> s;
+    int n = s.size();
+    for (int i = 0; i < n; i++){
+        if (s[i] == 'C'){
+            ll l = i;
+            ll r = n - i - 1;
+            ll b = min(l,r);
+            res += 1;
+            res += b;
         }
     }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
-    }
-    cout << res << endl;
+    cout <<res << endl;
 };
 
 int main(){

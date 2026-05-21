@@ -27,26 +27,34 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
+    // 0 0 0 
+    // 2 2 2 
+    // 1 2 
+    // 1 1 1 
     int n;
     cin >> n;
     vi a(n);
     for (auto& z:a) cin >> z;
-    int mx = 1000005;
-    vi div(mx);
-    for (auto& z: a){
-        const int up = (int) sqrt(z);
-        for (int i = 1; i <= up; i++){
-            if (z % i == 0){
-                div[i]++;
-                if (i != z/i) div[z/i]++;
-            }
-        }
+    int res  =0;
+    int zero = 0, one = 0, two = 0;
+    for (int i = 0; i < n; i++){
+        if (a[i] == zero) res++;
+        else if (a[i] == 1) one++;
+        else two++;
     }
-    int res = 1;
-    for (int i = 1; i < mx; i++){
-        if (div[i] > 1) res = i;
+    
+    int mn = min(one,two);
+    res += mn;
+    one -= mn;
+    two -= mn;
+    if (one > 0){
+        res += one/3;
+    }
+    if (two > 0){
+        res += (two/3);
     }
     cout << res << endl;
+
 };
 
 int main(){
@@ -56,7 +64,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--){
         solve();
     }
