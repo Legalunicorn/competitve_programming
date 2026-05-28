@@ -26,48 +26,17 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// this is a dp problem 
+// dp[s][t] ->
 
+// NOTE:
+// let dp
 
-// we split it into how oftn each bit appears 
-// "1" -> for all odd numbers 
-// "-1" apears at { 2, 3 }
-// NOTE 
-// 1. for each bit -> we track the first time it appears 
-// then we know 
-// 1. how many times it appear then stop then appear then stop 
-// we divid (N - appear) / (size)
-// 0 0 0 1 
-// 0 0 1 0
-// 0 0 1 1 
-// 0 1 0 0
-// 0 1 0 1 
-// 0 1 1 0
-// 0 1 1 1 
-// 1 0 0 0
-// 1 0 0 1 
-// 1 0 1 0 
-// 1 0 1 1 
 void solve(){
-    ull n;
-    cin >> n;
-    ull res = 0;
-    for (int b = 0; b < 64; b++){
-        ull t = 1LL << b;
-        debug(b, t);
-        if (n < t) break;
-        ull gap = t; 
-        ull q = (n - t + 1) / t;
-        ull m = (n - t + 1) % t;
-        if (q%2 == 0){
-            res += (q/2) * t;
-            res += m;
-        } else{
-            res += ((q+1)/2) * t;
-        }
-
-        // {x x x .. gap} {. . . . gap } {x x x  gap} .. and so in 
-    }
-    cout << res << endl;
+    string s, t;
+    cin >> s >> t;
+    int N = s.size(), M = t.size();
+    vvi dp(N, vi(M));
 };
 
 int main(){

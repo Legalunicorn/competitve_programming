@@ -26,46 +26,37 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// longest balance string? 
+// there are only two charactes 
+// map/prefix sum 
+// count = 0;
+// for each count ++ or count --; 
+// then each index has a count 
+// each count has a min and max position
+// if count are equal, the string is balanced;
+// count = 0; -> the min = -1 ()
 
-
-// we split it into how oftn each bit appears 
-// "1" -> for all odd numbers 
-// "-1" apears at { 2, 3 }
-// NOTE 
-// 1. for each bit -> we track the first time it appears 
-// then we know 
-// 1. how many times it appear then stop then appear then stop 
-// we divid (N - appear) / (size)
-// 0 0 0 1 
-// 0 0 1 0
-// 0 0 1 1 
-// 0 1 0 0
-// 0 1 0 1 
-// 0 1 1 0
-// 0 1 1 1 
-// 1 0 0 0
-// 1 0 0 1 
-// 1 0 1 0 
-// 1 0 1 1 
 void solve(){
-    ull n;
-    cin >> n;
-    ull res = 0;
-    for (int b = 0; b < 64; b++){
-        ull t = 1LL << b;
-        debug(b, t);
-        if (n < t) break;
-        ull gap = t; 
-        ull q = (n - t + 1) / t;
-        ull m = (n - t + 1) % t;
-        if (q%2 == 0){
-            res += (q/2) * t;
-            res += m;
+    int n;
+    cin >> n;;
+    string s;
+    cin >> s;
+    int cnt = 0;
+    map<int,pi> mp;
+    mp[0] = {0,0};
+    for (int i = 0; i < n; i++){
+        if (s[i] == '1') cnt++;
+        else cnt--;
+        if (!mp.count(cnt)){
+            mp[cnt] = {i+1,i+1};
         } else{
-            res += ((q+1)/2) * t;
+            mp[cnt].S = max(mp[cnt].S, i+1);
         }
-
-        // {x x x .. gap} {. . . . gap } {x x x  gap} .. and so in 
+    }
+    int res = 0;
+    for (auto& [x, p]: mp){
+        int d = p.S - p.F;
+        res = max(res,d);
     }
     cout << res << endl;
 };

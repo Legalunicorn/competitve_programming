@@ -27,47 +27,48 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 
-
-// we split it into how oftn each bit appears 
-// "1" -> for all odd numbers 
-// "-1" apears at { 2, 3 }
-// NOTE 
-// 1. for each bit -> we track the first time it appears 
-// then we know 
-// 1. how many times it appear then stop then appear then stop 
-// we divid (N - appear) / (size)
-// 0 0 0 1 
-// 0 0 1 0
-// 0 0 1 1 
-// 0 1 0 0
-// 0 1 0 1 
-// 0 1 1 0
-// 0 1 1 1 
-// 1 0 0 0
-// 1 0 0 1 
-// 1 0 1 0 
-// 1 0 1 1 
-void solve(){
-    ull n;
-    cin >> n;
-    ull res = 0;
-    for (int b = 0; b < 64; b++){
-        ull t = 1LL << b;
-        debug(b, t);
-        if (n < t) break;
-        ull gap = t; 
-        ull q = (n - t + 1) / t;
-        ull m = (n - t + 1) % t;
-        if (q%2 == 0){
-            res += (q/2) * t;
-            res += m;
-        } else{
-            res += ((q+1)/2) * t;
+struct KMP{
+    vector<int> search(string text, string pat){
+        int n = text.size(), m = pat.size();
+        vector<int> lps(m), res;
+        construct(pat,lps);
+        int i =0, j = 0;
+        while(i<n){
+            if (text[i]==pat[j]){
+                i++, j++;
+                if (j == m){
+                    res.push_back(i-j);
+                    j = lps[j-1];
+                } 
+            } else{
+                if (j!=0) j = lps[j-1];
+                else i++;
+            }
         }
-
-        // {x x x .. gap} {. . . . gap } {x x x  gap} .. and so in 
+        return res;
     }
-    cout << res << endl;
+private:
+    void construct(string pat, vector<int>& lps){
+        int len = 0, i =1;
+        while (i< pat.size()){
+            if (pat[i] == pat[len]){
+                lps[i++] = ++len;
+            } else{
+                if (len) len = lps[len-1];
+                else lps[i++] = 0;
+            }
+        }
+    }
+};
+
+
+void solve(){
+    string n,m;
+    cin >>  n >> m;
+    debug(n,m);
+    KMP k;
+    vi ans = k.search(n,m);
+    cout << ans.size() << endl;
 };
 
 int main(){

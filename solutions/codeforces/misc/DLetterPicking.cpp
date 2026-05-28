@@ -27,48 +27,41 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 
-
-// we split it into how oftn each bit appears 
-// "1" -> for all odd numbers 
-// "-1" apears at { 2, 3 }
-// NOTE 
-// 1. for each bit -> we track the first time it appears 
-// then we know 
-// 1. how many times it appear then stop then appear then stop 
-// we divid (N - appear) / (size)
-// 0 0 0 1 
-// 0 0 1 0
-// 0 0 1 1 
-// 0 1 0 0
-// 0 1 0 1 
-// 0 1 1 0
-// 0 1 1 1 
-// 1 0 0 0
-// 1 0 0 1 
-// 1 0 1 0 
-// 1 0 1 1 
-void solve(){
-    ull n;
-    cin >> n;
-    ull res = 0;
-    for (int b = 0; b < 64; b++){
-        ull t = 1LL << b;
-        debug(b, t);
-        if (n < t) break;
-        ull gap = t; 
-        ull q = (n - t + 1) / t;
-        ull m = (n - t + 1) % t;
-        if (q%2 == 0){
-            res += (q/2) * t;
-            res += m;
-        } else{
-            res += ((q+1)/2) * t;
-        }
-
-        // {x x x .. gap} {. . . . gap } {x x x  gap} .. and so in 
-    }
-    cout << res << endl;
+int cmp(char a, char b){
+    if (a<b) return -1;
+    else if (a>b) return 1;
+    return 0;
 };
+
+void solve(){
+    string s; cin >> s;
+    int n = s.size();
+    vvi dp(n+1, vi(n));
+    for (int i = 0; i+1<n;i++)
+        if (s[i]!=s[i+1]) dp[i][i+1] = -1;
+        else dp[i][i+1] = 0;
+    for (int d = 3; d < n; d +=2){
+        for (int i = 0; i < n-d; i++){
+            int j = i+d, r1,r2,r3,r4;
+            if (dp[i+2][j]!=0) r1 = dp[i+2][j];
+            else r1 = cmp(s[i], s[i+1]);
+            if (dp[i+1][j-1]!=0) r2 = dp[i+1][j-1];
+            else r2 = cmp(s[i],s[j]);
+            if (dp[i+1][j-1]!=0) r3 = dp[i+1][j-1];
+            else r3 = cmp(s[j], s[i]);
+            if (dp[i][j-2]!=0) r4  = dp[i][j-2]; 
+            else r4 = cmp(s[j], s[j-1]);
+            dp[i][j] = min(
+                    max(r1,r2), // alice left 
+                    max(r3,r4)  // alic right
+                    );
+        }
+    }
+    int ans = dp[0][n-1];
+    if (ans == 0) cout << "Draw" << endl;
+    else cout << "Alice" << endl;
+}
+
 
 int main(){
     ios::sync_with_stdio(0);
@@ -77,7 +70,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--){
         solve();
     }

@@ -26,48 +26,60 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// NOTE:
+// exaclty one station such that pj = i? 
+// this just menas all the stations are cycles 
+// can be self loop 
+//
+// the numbre of ordered pairs if just 
+// each cycles choose 2 
 
+// NOTE: FORMULA 
+// n^ 2 
 
-// we split it into how oftn each bit appears 
-// "1" -> for all odd numbers 
-// "-1" apears at { 2, 3 }
-// NOTE 
-// 1. for each bit -> we track the first time it appears 
-// then we know 
-// 1. how many times it appear then stop then appear then stop 
-// we divid (N - appear) / (size)
-// 0 0 0 1 
-// 0 0 1 0
-// 0 0 1 1 
-// 0 1 0 0
-// 0 1 0 1 
-// 0 1 1 0
-// 0 1 1 1 
-// 1 0 0 0
-// 1 0 0 1 
-// 1 0 1 0 
-// 1 0 1 1 
+// NOTE:
+// we should greedily increase the largest cycle size 
+//
+
+// we can essentially merge any two cycles 
+
 void solve(){
-    ull n;
+    ll n;
     cin >> n;
-    ull res = 0;
-    for (int b = 0; b < 64; b++){
-        ull t = 1LL << b;
-        debug(b, t);
-        if (n < t) break;
-        ull gap = t; 
-        ull q = (n - t + 1) / t;
-        ull m = (n - t + 1) % t;
-        if (q%2 == 0){
-            res += (q/2) * t;
-            res += m;
-        } else{
-            res += ((q+1)/2) * t;
+    vi a(n);
+    for (auto& z:a) cin >> z;
+    for (int i = 0; i < n;i++) a[i]--;
+    vb seen(n, false);
+    int sz = 0;
+    auto go = [&](auto& go, int u) -> void{
+        seen[u] = true;
+        sz++;
+        int v = a[u];
+        if (!seen[v]){
+            go(go, v);
         }
-
-        // {x x x .. gap} {. . . . gap } {x x x  gap} .. and so in 
+    };
+    vl b;
+    for (int i = 0; i < n; i++){
+        if (!seen[i]){
+            sz = 0;
+            go(go,i);
+            if (sz>0) b.pb(sz);
+        }
     }
-    cout << res << endl;
+    sort(all(b));
+    if (b.size() ==1){
+        cout << (n*n) << endl;
+    } else{
+        int m = b.size();
+        ll res = 0;
+        b[m-1] += b[m-2];
+        b[m-2] = 0;
+        for (int i =0; i < m;i++) res += (b[i]*b[i]);
+        cout << res << endl;
+    }
+
+
 };
 
 int main(){

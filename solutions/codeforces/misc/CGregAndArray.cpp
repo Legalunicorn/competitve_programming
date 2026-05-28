@@ -26,48 +26,40 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
-
-
-// we split it into how oftn each bit appears 
-// "1" -> for all odd numbers 
-// "-1" apears at { 2, 3 }
-// NOTE 
-// 1. for each bit -> we track the first time it appears 
-// then we know 
-// 1. how many times it appear then stop then appear then stop 
-// we divid (N - appear) / (size)
-// 0 0 0 1 
-// 0 0 1 0
-// 0 0 1 1 
-// 0 1 0 0
-// 0 1 0 1 
-// 0 1 1 0
-// 0 1 1 1 
-// 1 0 0 0
-// 1 0 0 1 
-// 1 0 1 0 
-// 1 0 1 1 
 void solve(){
-    ull n;
-    cin >> n;
-    ull res = 0;
-    for (int b = 0; b < 64; b++){
-        ull t = 1LL << b;
-        debug(b, t);
-        if (n < t) break;
-        ull gap = t; 
-        ull q = (n - t + 1) / t;
-        ull m = (n - t + 1) % t;
-        if (q%2 == 0){
-            res += (q/2) * t;
-            res += m;
-        } else{
-            res += ((q+1)/2) * t;
-        }
-
-        // {x x x .. gap} {. . . . gap } {x x x  gap} .. and so in 
+    int n,m,k;
+    cin >> n >> m >> k;
+    vl a(n);
+    for (auto& z:a) cin >> z;
+    vvi op(m, vi(3));
+    for (int i = 0; i < m; i++){
+        for (int j = 0; j < 3 ;j++) cin >> op[i][j];
     }
-    cout << res << endl;
+    debug(op);
+    int x,y;
+    vl  freq(m+1);
+    while(k--){
+        cin >> x >> y;
+        x--, y--;
+        freq[x]++;
+        freq[y+1]--;
+    }
+    for (int i = 1; i <= m;i++) freq[i] += freq[i-1];
+    debug(freq);
+    // now we have the frequency of each operation 
+    // freq[i] -> how many times to appli operation [i]
+    // this is simply second difference array
+    vl d(n+1);
+    for (int i = 0; i < m; i++){
+        ll di = (ll) op[i][2] * (ll) freq[i];
+        debug(i, di);
+        d[op[i][0]-1] += di;
+        d[op[i][1]] -= di;
+    }
+    for (int i = 1; i <= n; i++) d[i] += d[i-1];
+    for (int i = 0; i < n; i++) cout << a[i] + d[i] << " ";
+    cout << endl;
+
 };
 
 int main(){
