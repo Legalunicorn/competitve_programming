@@ -26,6 +26,7 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+
 void solve(){
     int a,b,c,d;
     cin >> a >> b >> c >> d;

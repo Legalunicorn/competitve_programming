@@ -27,7 +27,26 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-
+    int n,m;
+    cin >> n >> m;
+    // pick with lowest id? 
+    // is this just simulation> 
+    // worker 1: completes in predictable order easdy isnt it just sum of all 
+    // ah no its not purely sum, its based on long long has been wasted 
+    // -> if we wasted so much time that okay there is some MAX involve then sum 
+    vvi g(n+1, vi(m+1));
+    vvi f(n+1, vi(m+1));
+    for (int i = 1; i <= n;i++){
+        for (int j = 1; j <= m; j++) cin >> g[i][j];
+    }
+    vi res;
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= m; j++){
+            g[i][j] += max(g[i-1][j], g[i][j-1]);
+            if (j == m) res.pb(g[i][j]);
+        }
+    }
+    for (auto& r: res) cout << r << " ";
 };
 
 int main(){

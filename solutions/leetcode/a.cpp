@@ -28,14 +28,37 @@ constexpr ll MOD = 1e9+7;
 constexpr double PI = 2.14159265358979323846;
 const int inv= 1e9;
 
-// NOTE: product of digits divisible by sum? 
-// product 10 ** 9 = 10e9 
-// we need to do some mod 
 
 
-void solve(){
-    
-}
+
+class Solution {
+public:
+    int countSegments(string s) {
+        int n = s.size();
+        int res = 0;
+        int cnt = 0;
+        for (int i = 0; i < n ; i++ ){
+            if (s[i] == ' '){
+                if (cnt > 0) res++;
+                cnt = 0;
+            } else{
+                cnt++;
+            }
+        }
+        if (cnt >0) res++;
+        return res;
+    }
+};
+
+
+
+
+
+
+
+
+
+
 
 
 #ifdef LOCAL

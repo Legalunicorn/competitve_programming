@@ -27,10 +27,6 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    // binary search for the sum that is as close to 0
-    // then perform pack and forth shuffle 
-    // actually the gap will overshoot by a bit like lets say 1 + 2 +3 + 4 + 5 + 6 -> excess 4 
-
     ll a,b;
     cin >> a >> b;
     ll d  = abs(a-b);
@@ -57,15 +53,8 @@ void solve(){
             return;
         }
     }
-     // if (delt%2==1) {
-    //
-    //     // if (delt == 1) moves++;
-    //     moves+=2;
-    // }
-    // cout << moves << endl;
 
 
-    
 
 
     // ll a,b;
