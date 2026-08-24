@@ -28,24 +28,33 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int q,k;
-    cin >> q >> k;
-    // this is omega trivial 
-    int N = 100005;
-    vl dp(N,0);
-    dp[0] = 1; // the nullway
-    for (int i = 1; i < N; i++){
-        dp[i] = dp[i-1];
-        if (i - k >= 0) dp[i] = (dp[i] + dp[i-k]) % MOD;
+    int n;
+    cin >> n;
+    vi a(2 * n);
+    for (auto& z:a) cin >> z;
+    ll res = 0ll;
+    for (auto& z:a) res += abs(z); // defautl -> all zeros
+    if (n == 1){
+        // special case: we can just use the same numer 
+        // if n == 2, 2 is a special casse
+        int d = abs(a[0]-a[1]);
+        cout << d << endl;
+        return;
+    } 
+    if (n ==2){ // has special case if 2 2 2 2 
+        ll evl = 0;
+        for (auto& z: a) evl += abs(z - 2);
+        res = min(res,evl);
     }
-    for (int i = 1; i < N; i++) dp[i] = (dp[i] + dp[i-1]) % MOD;
-    // for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
-    while(q--){
-        int a,b;
-        cin >> a >> b;
-        ll ans = (dp[b] - dp[a-1] + MOD) % MOD;
-        cout << ans << endl;
+    if (n % 2 == 0){ // even n has the -1 trick 
+        ll base = 0ll;
+        for (auto& z:a) base += abs(-1 - z);
+        for (auto& z:a){ 
+            ll ab = abs(- 1 -z);
+            res = min(res, base - ab + abs(n - z));
+        }
     }
+    cout << res << endl;
 };
 
 int main(){
@@ -55,7 +64,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--) solve();
     return 0;
 }

@@ -28,24 +28,38 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int q,k;
-    cin >> q >> k;
-    // this is omega trivial 
-    int N = 100005;
-    vl dp(N,0);
-    dp[0] = 1; // the nullway
-    for (int i = 1; i < N; i++){
-        dp[i] = dp[i-1];
-        if (i - k >= 0) dp[i] = (dp[i] + dp[i-k]) % MOD;
+    int n,m;
+    cin >> n >> m;
+    vb freq(26);
+    for (int i = 0; i < n;i++){
+        string s;
+        cin >> s;
+        // char l = tolower(s[0]);
+        char c = s[0];
+        freq[c-'a'] = true;
     }
-    for (int i = 1; i < N; i++) dp[i] = (dp[i] + dp[i-1]) % MOD;
-    // for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
-    while(q--){
-        int a,b;
-        cin >> a >> b;
-        ll ans = (dp[b] - dp[a-1] + MOD) % MOD;
-        cout << ans << endl;
+    debug(freq);
+    int yes = 1;
+    for (int i = 0; i < m; i++){
+        string s;
+        cin >> s;
+        debug(s);
+        for (char& c: s){
+            c = tolower(c);
+            debug(c,freq, freq[c-'a'], c-'a');
+            debug(freq[c-'a']==0);
+            if (freq[c-'a']==0){
+                yes = 0;
+            }
+        }
+        char x = tolower(s[0]);
+        freq[x-'a'] = true;
     }
+    if (yes==1) cout << "YES" << endl;
+    else cout << "NO" << endl;
+    cerr << endl;
+    
+
 };
 
 int main(){
@@ -55,7 +69,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--) solve();
     return 0;
 }

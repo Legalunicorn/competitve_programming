@@ -28,24 +28,22 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int q,k;
-    cin >> q >> k;
-    // this is omega trivial 
-    int N = 100005;
-    vl dp(N,0);
-    dp[0] = 1; // the nullway
-    for (int i = 1; i < N; i++){
-        dp[i] = dp[i-1];
-        if (i - k >= 0) dp[i] = (dp[i] + dp[i-k]) % MOD;
+    // omega trivial ong
+    ll l,r;
+    cin >> l >> r;
+    if (l == r){
+        cout << 0 << endl;
+        return;
     }
-    for (int i = 1; i < N; i++) dp[i] = (dp[i] + dp[i-1]) % MOD;
-    // for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
-    while(q--){
-        int a,b;
-        cin >> a >> b;
-        ll ans = (dp[b] - dp[a-1] + MOD) % MOD;
-        cout << ans << endl;
+    int fb = 0;
+    for (int i = 60; i >= 0; i--){
+        if ((l>>i &1) != (r>>i&1)){
+            fb =i;
+            break;
+        }
     }
+    ll res = (1ll << (fb+1)) -1;
+    cout << res << endl;
 };
 
 int main(){

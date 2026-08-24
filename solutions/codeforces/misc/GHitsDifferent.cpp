@@ -28,23 +28,45 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int q,k;
-    cin >> q >> k;
-    // this is omega trivial 
-    int N = 100005;
-    vl dp(N,0);
-    dp[0] = 1; // the nullway
-    for (int i = 1; i < N; i++){
-        dp[i] = dp[i-1];
-        if (i - k >= 0) dp[i] = (dp[i] + dp[i-k]) % MOD;
+    // this is more like impl
+    // we construct the p
+    // int nxt size 
+    // int current pos 
+    // construct some bad graph 
+    // then precompute from with dp
+    int n = 1000010;
+    int layer = 1;
+    ll cur = 1;
+    vl dp(n);
+    vb add(n);
+    for (ll i = 1; i < n; i++){
+        dp[i] += i * i;
+        ll p1  = i + (layer - cur) + cur;
+        ll p2 = p1 + 1;
+        if (p1 < n){
+            if (!add[p1]) dp[p1] += dp[i];
+            else dp[p1] += i*i;
+            add[p1] = true;
+        }
+        if (p1 < n){
+            if (!add[p2]) dp[p2] += dp[i];
+            else dp[p2] += i*i;
+            add[p2] = true;
+        }
+        cur++;
+        if (cur > layer){
+            cur = 1;
+            layer++;
+        }
     }
-    for (int i = 1; i < N; i++) dp[i] = (dp[i] + dp[i-1]) % MOD;
-    // for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
-    while(q--){
-        int a,b;
-        cin >> a >> b;
-        ll ans = (dp[b] - dp[a-1] + MOD) % MOD;
-        cout << ans << endl;
+    for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
+    cerr << endl;
+    int t;
+    cin >> t;
+    while(t--){
+        ll x;
+        cin >> x;
+        cout << dp[x] << endl;
     }
 };
 

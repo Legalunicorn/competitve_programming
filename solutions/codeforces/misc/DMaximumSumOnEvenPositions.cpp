@@ -28,24 +28,40 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-    int q,k;
-    cin >> q >> k;
-    // this is omega trivial 
-    int N = 100005;
-    vl dp(N,0);
-    dp[0] = 1; // the nullway
-    for (int i = 1; i < N; i++){
-        dp[i] = dp[i-1];
-        if (i - k >= 0) dp[i] = (dp[i] + dp[i-k]) % MOD;
+    int n;
+    cin >> n;
+    vl a(n);
+    for (auto& z:a) cin >> z;
+    ll res = 0;
+    debug(a);
+    for (int i = 0; i < n; i+=2) res += a[i];
+    ll base = res;
+    debug(res);
+    vl b = a;
+    for (int i = 0; i < n; i += 2) b[i] *= -1;
+    for (int i = 1; i < n; i++) b[i] += b[i-1];
+    // start at even, end at odd 
+    {
+        ll low = 0ll;
+        ll gain = 0LL;
+        for (int i = 1; i < n; i +=2){
+            gain = max(gain, b[i] - low);
+            low = min(low,b[i] );
+        }
+        debug(gain,low);
+        res = max(res, base + gain);
     }
-    for (int i = 1; i < N; i++) dp[i] = (dp[i] + dp[i-1]) % MOD;
-    // for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
-    while(q--){
-        int a,b;
-        cin >> a >> b;
-        ll ans = (dp[b] - dp[a-1] + MOD) % MOD;
-        cout << ans << endl;
+    {
+        ll low = b[0];
+        ll gain = 0ll;
+        for (int i = 2; i < n; i+=2){
+            gain = max(gain, b[i] - low);
+            low = min(low, b[i]);
+        }
+        debug(gain,low);
+        res = max(res, base + gain);
     }
+    cout << res << endl;
 };
 
 int main(){
@@ -55,7 +71,7 @@ int main(){
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--) solve();
     return 0;
 }

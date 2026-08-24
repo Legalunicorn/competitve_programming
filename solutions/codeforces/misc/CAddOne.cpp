@@ -27,35 +27,46 @@ constexpr ll INF = 4e18;
 constexpr ld EPS = 1e-9; 
 constexpr ll MOD = 1e9+7;
 
+// NOTE: 
+// m operations 
+// we just need to care digit i,k op -> how many digitis eventually 
+// dp[i][k] = dp[(i+1)]
+
+const int N = 200005;
+ll dp[N][10];
+
+void init(){
+    for (int k = 0; k < N; k++){
+        for (int d = 0; d < 10; d++){
+            if (k == 0) dp[k][d] = 1;
+            else if (d == 9) dp[k][d] = (dp[k-1][0] + dp[k-1][1]) % MOD;
+            else dp[k][d] = dp[k-1][d+1];
+        }
+    }
+}
+
 void solve(){
-    int q,k;
-    cin >> q >> k;
-    // this is omega trivial 
-    int N = 100005;
-    vl dp(N,0);
-    dp[0] = 1; // the nullway
-    for (int i = 1; i < N; i++){
-        dp[i] = dp[i-1];
-        if (i - k >= 0) dp[i] = (dp[i] + dp[i-k]) % MOD;
+    int n, m;
+    cin >> n >> m;
+    ll res = 0;
+    while(n){
+        int r = n % 10;
+        debug(r,m, dp[m][r]);
+        res = (res + dp[m][r]) % MOD;
+        n/=10;
     }
-    for (int i = 1; i < N; i++) dp[i] = (dp[i] + dp[i-1]) % MOD;
-    // for (int i = 0; i <= 10; i++) cerr << dp[i] << " ";
-    while(q--){
-        int a,b;
-        cin >> a >> b;
-        ll ans = (dp[b] - dp[a-1] + MOD) % MOD;
-        cout << ans << endl;
-    }
+    cout << res << endl;
 };
 
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+    init();
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
-    // cin >> T; 
+    cin >> T; 
     while(T--) solve();
     return 0;
 }
