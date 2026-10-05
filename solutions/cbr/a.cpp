@@ -17,6 +17,7 @@ using vb = vector<bool>; using vvb = vector<vb>;
 #define F first 
 #define S second 
 #define all(x) begin(x), end(x)
+#define rall(x) rbegin(x), rend(x)
 #define pb push_back
 #define MIN(a) *min_element(all(a));
 #define MAX(a) *max_element(all(a));
@@ -27,43 +28,58 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 
+
 void solve(){
-    int n;
-    cin >> n;
-    map<string, int> mp;
-    for (int i = 0; i < n; i++){
-        string s; 
-        int t;
-        cin >> s >> t;
-        mp[s] = t;
+    int c,p;
+    cin >> c >> p;
+    vpi a(c);
+    for (int i =0; i < c;i++){
+        int x,y;
+        cin >> x >> y;
+        a[i] = {x,y};
     }
-    int x; cin >> x;
-    ll sum  =0;
-    for (int i = 0;i  < x; i++){
-        string s; cin >> s;
-        sum += mp[s];
+    sort(all(a),[&](const auto& u, const auto& v) {
+        if (u.F < v.F) return true;
+        else if (u.F > v.F) return false;
+        else{
+            if (u.S == v.S) return false;
+            if (u.S > v.S) return true;
+        }
+        return false;
+    });
+    debug(a);
+    for (int i = 1; i < c;i++) a[i].S = max(a[i].S, a[i-1].S);
+    // for (int i = c-2; i >= 0;i--){
+    //     a[i].S = max(a[i].S, a[i+1].S);
+    // }
+    debug(a);
+    ll res = 0;
+    for (int i = 0; i < p; i ++){
+        int q,d;
+        cin >> q >> d;
+        int l = 0, r = c-1, evl = 0;
+        while(l<=r){
+            int m = (l+r)/2;
+            if (q >= a[m].F){
+                evl = max(evl, a[m].S - d);
+                l = m + 1;
+            } else r = m -1;
+        }
+        debug(q,d,evl);
+        res += evl;
     }
-    cout << (sum/x) << endl;
-
-  
-  
-    
-
-
-
+    cout << res << endl;
 }
 
-int main(){ 
+int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
+    // init();
     // freopen("file.in","r",stdin);
     // freopen("file.out","w",stdout);
     int T =1;
     // cin >> T; 
-    while(T--){
-        solve();
-    }
-    cerr << " == END ==" << endl;
+    while(T--) solve();
     return 0;
 }

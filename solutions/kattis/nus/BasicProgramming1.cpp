@@ -28,7 +28,50 @@ constexpr ld EPS = 1e-9;
 constexpr ll MOD = 1e9+7;
 
 void solve(){
-
+    int n,t;
+    cin >> n >> t;
+    vi a(n);
+    for (auto& z:a)cin>>z;
+    if (t==1){
+        cout << 7;
+    } else if (t==2){
+        if (a[0] > a[1]) cout << "Bigger";
+        else if (a[0] < a[1]) cout << "Smaller";
+        else cout << "Equal";
+    } else if (t== 3){
+        vi z = {a[0], a[1],a[2]};
+        sort(all(z));
+        cout << z[1];
+    } else if (t==4){
+        ll s =0;
+        for (auto& z:a) s +=z;
+        cout << s ;
+    } else if (t== 5){
+        ll s =0;
+        for (auto& z:a) if (z%2==0) s+=z;
+        cout << s;
+    } else if (t==6){
+        for (auto&z:a) cout << (char)((z%26)+'a');
+    } else if (t==7){
+        int c = 0;
+        c = a[0];
+        set<int> seen;
+        while(true){
+            if (c < 0 || c >= n) {
+                cout << "Out";
+                return;
+            } else if ( c == n-1){
+                cout << "Done";
+                return;
+            }
+            c = a[c];
+            if (seen.count(c)){
+                cout << "Cyclic";
+                return;
+            }
+            seen.insert(c);
+        }
+    }
 };
 
 int main(){

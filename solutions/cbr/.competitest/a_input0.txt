@@ -1,7 +1,7 @@
-3
-Solomon 400
-Samuel 500
-Aaron 450
-2
-Samuel
-Aaron
+3 3
+2 5
+1 1
+8 3
+3 2
+9 4
+1 3

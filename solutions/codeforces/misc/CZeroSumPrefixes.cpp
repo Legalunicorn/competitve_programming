@@ -1,125 +1,78 @@
-/*
- __  __     __     ______     ______     ______   
-/\ \_\ \   /\ \   /\  == \   /\  __ \   /\  ___\  
-\ \  __ \  \ \ \  \ \  __<   \ \ \/\ \  \ \ \____ 
- \ \_\ \_\  \ \_\  \ \_\ \_\  \ \_____\  \ \_____\
-  \/_/\/_/   \/_/   \/_/ /_/   \/_____/   \/_____/
-
-  */
-
 #include <bits/stdc++.h>
-
 using namespace std;
-using namespace chrono;
-// using namespace __gnu_pbds;
-// #include <ext/pb_ds/assoc_container.hpp>
-// #include <ext/pb_ds/tree_policy.hpp>
-//template/ template <class T> using ordered_set = tree<T, null_type,
-// less<T>, rb_tree_tag,tree_order_statistics_node_update>;
-// // 
-// template <class T> using ordered_multiset = tree<T, null_type,
-// less_e
+using ll = long long; using ull = unsigned long long;using ld = double; 
+using vi = vector<int>; using vvi = vector<vi>;
+using vl = vector<ll>; using vvl = vector<vl>;
+using pl = pair<ll,ll>; using vpl = vector<pl>; using vvpl = vector<vpl>;
+using pi = pair<int,int>; using vpi = vector<pi>;using vvpi = vector<vpi>;
+using vb = vector<bool>; using vvb = vector<vb>;
 
-//alias 
-using ll = long long;
-using ull = unsigned long long; 
-using ld = double; 
-using pii = pair<int,int>;
-using vi = vector<int>;
-using vvi = vector<vi>;
-using vvvi = vector<vvi>;
-using vl = vector<ll>;
-using vvl = vector<vl>;
-using pl = pair<ll,ll>;
-using vpl = vector<pl>;
-using pi = pair<int,int>;
-using vpi = vector<pi>;
-using vvpi = vector<vpi>;
-using vb = vector<bool>;
-using vvb = vector<vb>;
+#if defined(LOCAL) && __has_include("debug.h")
+#include "debug.h"
+#else
+#define debug(...)
+#endif
 
-
-// constants 
-
-constexpr ll INF = 4e18;
-constexpr ld EPS = 1e-9;
-constexpr ll MOD = 1e9+7;
-constexpr double PI = 3.14159265358979323846;
-
-
-// macros
 #define endl '\n' 
-#define F first
+#define F first 
 #define S second 
 #define all(x) begin(x), end(x)
+#define rall(x) rbegin(x), rend(x)
 #define pb push_back
-#define MP make_pair
 #define MIN(a) *min_element(all(a));
 #define MAX(a) *max_element(all(a));
-#define sortU (a) sort(all(a)),(a).erase(unique(all(a)),(a).end())
 
-// === Debug macros , to add a general function and replace this gunk
-#define debugv(vec) cerr << #vec << " = ["; for (size_t i = 0; i < (vec).size(); ++i) { cerr << (vec)[i]; if (i + 1 < (vec).size()) cerr << ", "; } cerr << "]\n";
-#define debugm(mat) do { cerr << #mat << " = [\n"; for (size_t i = 0; i < (mat).size(); ++i) { cerr << "  ["; for (size_t j = 0; j < (mat)[i].size(); ++j) { cerr << (mat)[i][j]; if (j + 1 < (mat)[i].size()) cerr << ", "; } cerr << "]\n"; } cerr << "]\n"; } while (0)
-
-//variables and functoins
 const vvi dirs = {{-1,0},{1,0},{0,-1},{0,1}};
-const vector<char> dir_char = {'U','D','L','R'};
-vector<char> vowels = {'a','e','i','o','u'};
-string make_lower(const string& t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return tolower(c); }); return s; }
-string make_upper(const string&t) { string s = t; transform(all(s), s.begin(), [](unsigned char c) { return toupper(c); }); return s; }
-bool is_vowel(char c) {return c == 'a' || c == 'e' || c == 'u' || c == 'o' || c == 'i';}
+constexpr ll INF = 4e18; 
+constexpr ld EPS = 1e-9; 
+constexpr ll MOD = 1e9+7;
+
+// NOTE: 
+// if we edit an item 
+// 1. it only affects [i,n] 
+// option 1
+//  -> make pf[i] = 0
+// option 2
+//  -> maximise the future a[i] 
+//
+//  my confuse is option 2 might current be better, but what if 1 has 
+//  side effects that turns out to be better? 
+//
+//  say we store the prefixses in a map ish and some offset 
+//  oh we can only touch a[i] = 0 as well if that mattes 
+//  say the pf situtation is lie 
+//  3 3 3 
+//  0 0 
+//  2 2 
+//  1 
+//  9 
+// the data structure or invariant we need to maintain is 
+// 1) what is the most frequenet ement 
+// 2) shift all elements by x 
+// 3) add new elemnents 
+//
+// we can instead maintain an offset
+// how do i 
+// 1) add + get max fast? 
+// map<value -> freq>  store the freq 
+// then set<{freq, value}> for order
 
 
-
+// NOTE: 
+// 1. interate the array 
+// if u find a zero, iterate until before the next zero
+// maintain a fr
 void solve(){
     int n;
     cin >> n;
-    vl a(n);
-    for (auto& z:a)cin >>z;
-    // int res =0;
-    // ll sum =0;
-    // for (int i=0;i<n;i++){
-    //     sum += a[i];
-    //     if (sum==0){
-    //         res++;
-    //         continue; 
-    //     }
-    //     if (a[i]!=0) continue;
-    //     sum = 0; 
-    //     res++;
-    //
-    // }
-    // cout << res << endl;
-    // int cnt = 0;
-    // map<ll,int> mp;
-    // for (int i=0;i<n;i++){
-    //     ll x; cin >> x;
-    //     if (x==0) cnt++;
-    //     else mp[x]++;
-    // }
-    // int res = 0;
-    // int left = n - cnt; 
-    // set<ll> seen;
-    // for (auto& [val,freq]: mp){
-    //     if (seen.count(val)) continue;
-    //     seen.insert(val);
-    //     seen.insert(-val);
-    //     int pairs = min(freq, mp[-val]);
-    //     left -= pairs*2;
-    //     res += pairs*2;
-    // }
-    // // we have "cnt" and "left"
-    // // we can convert 
-    // res += min(cnt,left)*2;
-    // cout << res << endl;
-
+    vi a(n);
+    for (auto& z:a) cin >> z;
+    // compute prefix 
+    // store all the p
 
 };
 
-
 int main(){
-
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
@@ -127,12 +80,6 @@ int main(){
     // freopen("file.out","w",stdout);
     int T =1;
     cin >> T; 
-    auto start1 = high_resolution_clock::now();
-    while(T--){
-        solve();
-    }
-    auto stop1 = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop1-start1);
-    cerr << "Time: " << duration.count() / 1000 << " ms" << endl;
+    while(T--) solve();
     return 0;
 }
