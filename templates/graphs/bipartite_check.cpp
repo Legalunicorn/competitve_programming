@@ -22,7 +22,7 @@ bool check_bipartite(int u, vector<int>& color, vector<vector<int>>& g){
     int alt = 3 - cur;
     for (int v: g[u]){
         if (color[v]){
-            if (color[v] != cur) return false;
+            if (color[v] == cur) return false;
         } else {
             color[v] = alt;
             if (!check_bipartite(v, color, g)) return false;
