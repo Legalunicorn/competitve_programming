@@ -67,12 +67,9 @@ struct mod_int {
     friend std::ostream& operator<<(std::ostream &os, const mod_int &a) { os << a.value; return os; }
     friend std::istream& operator>>(std::istream &is, mod_int &a) { ll v; is >> v; a = mod_int(v); return is; }
 };
-// EDIT
-using mint = mod_int<EDIT_HERE>;
 
-
-// CHECK
-const int MX = 1e5+5;
+// BUG: check MXN
+const int MX = 3e5+5;
 template<class T>
 class Combinatoric {
     public: 
@@ -103,8 +100,8 @@ class Combinatoric {
         if (k < 0 || k > n) return 0; 
         return fact[n] * inv[n - k];
     }
- 
 }; 
+using mint = mod_int<EDIT_HERE>;
 Combinatoric<mint> comb(MX-1);
 //END_SNIPPET:mint_and_combinatoric
 

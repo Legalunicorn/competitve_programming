@@ -17,7 +17,7 @@ Description:
 
 //SNIPPET_ID:prime_sieve
 int MAXN = (int)(3e5+5);
-vector<bool> is_prime(MAXN, true);
+vector<bool> is_prime(MAXN+1, true);
 vector<int> primes;
 void init_sieve(){
     is_prime[0] = is_prime[1] = false;

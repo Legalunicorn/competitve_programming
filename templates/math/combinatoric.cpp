@@ -48,8 +48,8 @@ class Combinatoric {
         if (k < 0 || k > n) return 0; 
         return fact[n] * inv[n - k];
     }
- 
 }; 
+
 // Combinatoric<mint> comb(MX-1);
 //END_SNIPPET:combinatoric
 
