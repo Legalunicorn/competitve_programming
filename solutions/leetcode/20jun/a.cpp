@@ -38,23 +38,4 @@ public:
     vector<string> createGrid(int m, int n) {
         vector<string> g(m);
         for (int i = 0; i < m; i++){
-            // g[i] = "";
-            string s = "";
-            for (int j = 0; j < n ;j++) s += "#";
-            s[n-1] = '.';
-            g[i] = s;
-        }
-        for (int i = 0; i < n; i++) g[0][i] = '.';
-        return g;
-    }
-};
-
-#ifdef LOCAL
-int main(){
-    int t = 1;
-    // cin >> t;
-    while(t--) solve();
-    cerr << " == END ==" << endl;
-    return 0;
-}
-#endif
+     

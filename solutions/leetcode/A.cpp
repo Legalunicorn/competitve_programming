@@ -29,44 +29,75 @@ constexpr double PI = 2.14159265358979323846;
 const int inv= 1e9;
 
 
+ 
+int MAXN = (int)(3e5+5);
+vector<bool> is_prime(MAXN+1, true);
+vector<int> primes;
+void init_sieve(){
+    is_prime[0] = is_prime[1] = false;
+    for (int i = 2; i<= MAXN ; i++){
+        if (is_prime[i] && (ll)i * i  <= MAXN){
+            for (int j = i *i ; j <= MAXN; j += i){
+                is_prime[j] = false;
+            }
+        }
+    }
+    // for (int i=2; i<=MAXN;i++) {
+    //     if (is_prime[i]) primes.push_back(i);
+    // }
+};
 
+vector<int> trial_div(int n){
+    vector<int> fac;
+    for (auto& d: primes){
+        if (d* d > n) break;
+        while(n% d == 0){
+            fac.push_back(d);
+            n /= d;
+        }
+    }
+    if (n>1) fac.push_back(n);
+    return fac;
+}
 
 class Solution {
 public:
-    int countSegments(string s) {
-        int n = s.size();
-        int res = 0;
-        int cnt = 0;
-        for (int i = 0; i < n ; i++ ){
-            if (s[i] == ' '){
-                if (cnt > 0) res++;
-                cnt = 0;
-            } else{
-                cnt++;
+    vector<int> maxPrimeSubset(int n, int s) {
+        vi primes;
+        // max ~ 200 primes up to 1k
+        for (int i = 2; i <= n; i++){
+            bool valid = true;
+            for (int j = 2; j * j <= i; j++){
+                if (i % j == 0){
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) primes.pb(i);
+        }
+        debug(primes);
+        int p = primes.size();
+
+        const int INF = 1e9;
+        vvi dp(p+1, vi(s+1, INF));
+        dp[p][0] = 0;
+
+        for (int i = p-1; i >= 0; i--) {
+            for (int x = 0; x <= s; x++) {
+                // skip current prime
+                dp[i][x] = dp[i+1][x];
+
+                // take current prime
+                if (x >= primes[i] && dp[i+1][x-primes[i]] != INF) {
+                    dp[i][x] = min(
+                            dp[i][x],
+                            dp[i+1][x-primes[i]] + 1
+                            );
+                }
             }
         }
-        if (cnt >0) res++;
-        return res;
+        vi res;
+        int x  
+
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef LOCAL
-int main(){
-    int t = 1;
-    // cin >> t;
-    while(t--) solve();
-    cerr << " == END ==" << endl;
-    return 0;
-}
-#endif

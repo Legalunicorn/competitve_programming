@@ -29,44 +29,12 @@ constexpr double PI = 2.14159265358979323846;
 const int inv= 1e9;
 
 
-
-
-class Solution {
-public:
-    int countSegments(string s) {
-        int n = s.size();
-        int res = 0;
-        int cnt = 0;
-        for (int i = 0; i < n ; i++ ){
-            if (s[i] == ' '){
-                if (cnt > 0) res++;
-                cnt = 0;
-            } else{
-                cnt++;
-            }
-        }
-        if (cnt >0) res++;
-        return res;
-    }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef LOCAL
-int main(){
-    int t = 1;
-    // cin >> t;
-    while(t--) solve();
-    cerr << " == END ==" << endl;
-    return 0;
-}
-#endif
+ 
+int MAXN = (int)(3e5+5);
+vector<bool> is_prime(MAXN+1, true);
+vector<int> primes;
+void init_sieve(){
+    is_prime[0] = is_prime[1] = false;
+    for (int i = 2; i<= MAXN ; i++){
+        if (is_prime[i] && (ll)i * i  <= MAXN){
+            for (int j = i *i ; j <
